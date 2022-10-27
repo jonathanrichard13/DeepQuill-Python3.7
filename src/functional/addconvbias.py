@@ -17,7 +17,7 @@ def addconvbias(x: Tensor, bias: Tensor) -> Tensor:
 
     def grad_fn(child: Tensor) -> None:
         x.grad += child.grad
-        if x.nd.ndim == 3:
+        if x.grad.ndim == 3:
             bias.grad += sum(child.grad, axis=(-1, -2))
         else:
             bias.grad += sum(child.grad, axis=(0, -1, -2))

@@ -40,24 +40,17 @@ def avgpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
         output_nd: ndarray = zeros((*d_input_nd[:-2], output_nd_height, output_nd_width))
 
         # 3D average pooling loop
-        i_input_nd: int = 0
-        for i_output_nd in range(output_nd_height):
-            j_input_nd: int = 0
-            for j_output_nd in range(output_nd_width):
+        for i_output_nd, i_input_nd in zip(range(output_nd_height), range(0, (d_input_nd[-2] - kernel_size[-2] + 1), stride[-2])):
+            for j_output_nd, j_input_nd in zip(range(output_nd_width), range(0, (d_input_nd[-1] - kernel_size[-1] + 1), stride[-1])):
                 output_nd[..., i_output_nd, j_output_nd] = mean(input_nd[..., i_input_nd:(i_input_nd + kernel_size[-2]), j_input_nd:(j_input_nd + kernel_size[-1])], axis=(-1, -2))
-                j_input_nd += stride[-1]
-            i_input_nd += stride[-2]
         
         return output_nd
 
     def grad_fn(child: Tensor) -> None:
+        d_input_grad: tuple[int, int, int] | tuple[int, int, int, int] = input_tensor.grad.shape
         d_child_grad: tuple[int, int, int] | tuple[int, int, int, int] = child.grad.shape
-        i_input_grad: int = 0
-        for i_child_grad in range(d_child_grad[-2]):
-            j_input_grad: int = 0
-            for j_child_grad in range(d_child_grad[-1]):
+        for i_child_grad, i_input_grad in zip(range(d_child_grad[-2]), range(0, (d_input_grad[-2] - kernel_size[-2] + 1), stride[-2])):
+            for j_child_grad, j_input_grad in zip(range(d_child_grad[-1]), range(0, (d_input_grad[-1] - kernel_size[-1] + 1), stride[-1])):
                 input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])] += child.grad[..., None, None, i_child_grad, j_child_grad] * reciprocal(float(kernel_size[-2] * kernel_size[-1]))
-                j_input_grad += stride[-1]
-            i_input_grad += stride[-2]
 
     return Tensor(_avgpool3d(input_tensor.nd, kernel_size, stride), [input_tensor], is_leaf=False, grad_fn=grad_fn)
