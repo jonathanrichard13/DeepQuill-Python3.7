@@ -1,5 +1,5 @@
 from numpy import ndarray
-from cupy import amax, arange, argmax, int64, repeat, tile, zeros
+from cupy import amax, argmax, unravel_index, zeros
 
 from ..classes.tensor import Tensor
 
@@ -29,7 +29,7 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
     if len(stride) != 2:
         raise IndexError(f"If stride ({stride}) is a tuple, it must be of length = 2.")
     
-    def _maxpool3d(input_nd: ndarray, kernel_size: tuple[int, int], stride: tuple[int, int], return_indices: bool = False) -> ndarray | tuple[ndarray, ndarray]:
+    def _maxpool3d(input_nd: ndarray, kernel_size: tuple[int, int], stride: tuple[int, int]) -> ndarray:
 
         # get input dimensions
         d_input_nd: tuple[int, int, int] | tuple[int, int, int, int] = input_nd.shape
@@ -38,44 +38,43 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
         output_nd_height: int = ((d_input_nd[-2] - kernel_size[-2]) // stride[-2]) + 1
         output_nd_width: int = ((d_input_nd[-1] - kernel_size[-1]) // stride[-1]) + 1
         output_nd: ndarray = zeros((*d_input_nd[:-2], output_nd_height, output_nd_width))
-        indices_nd: ndarray = zeros((*d_input_nd[:-2], output_nd_height, output_nd_width), dtype=int64)
 
         # 3D max pooling loop
         i_input_nd: int = 0
         for i_output_nd in range(output_nd_height):
             j_input_nd: int = 0
             for j_output_nd in range(output_nd_width):
-                values: ndarray = input_tensor.nd[..., i_input_nd:(i_input_nd + kernel_size[-2]), j_input_nd:(j_input_nd + kernel_size[-1])]
-                output_nd[..., i_output_nd, j_output_nd] = amax(values, axis=(-1, -2))
-                indices_nd[..., i_output_nd, j_output_nd] = argmax(values.reshape((*d_input_nd[:-2], -1)), axis=-1)
+                _input_nd: ndarray = input_tensor.nd[..., i_input_nd:(i_input_nd + kernel_size[-2]), j_input_nd:(j_input_nd + kernel_size[-1])]
+                output_nd[..., i_output_nd, j_output_nd] = amax(_input_nd, axis=(-1, -2))
                 j_input_nd += stride[-1]
             i_input_nd += stride[-2]
         
-        if return_indices:
-            return output_nd, indices_nd
-        else:
-            return output_nd
-
-    output_nd, indices_nd = _maxpool3d(input_tensor.nd, kernel_size, stride, return_indices=True)
+        return output_nd
 
     def grad_fn(child: Tensor) -> None:
-        d_input_grad: tuple[int, int, int] | tuple[int, int, int, int] = input_tensor.grad.shape
         d_child_grad: tuple[int, int, int] | tuple[int, int, int, int] = child.grad.shape
-        i_input_grad: int = 0
-        for i_child_grad in range(d_child_grad[-2]):
-            j_input_grad: int = 0
-            for j_child_grad in range(d_child_grad[-1]):
-                if input_tensor.grad.ndim == 3:
-                    batches_nd: ndarray = Ellipsis
-                    channels_nd: ndarray = arange(d_input_grad[-3])
-                else:
-                    batches_nd: ndarray = repeat(arange(d_input_grad[-4]), d_input_grad[-3])
-                    channels_nd: ndarray = tile(arange(d_input_grad[-3]), d_input_grad[-4])
-                print(input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()])
-                print(child.grad[..., i_child_grad, j_child_grad].flatten())
-                input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()] += child.grad[..., i_child_grad, j_child_grad].flatten()
-                print(input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()])
-                j_input_grad += stride[-1]
-            i_input_grad += stride[-2]
+        if input_tensor.grad.ndim == 3:
+            for _input_nd, _input_grad, _child_grad in zip(input_tensor.nd, input_tensor.grad, child.grad):
+                i_input: int = 0
+                for i_child_grad in range(d_child_grad[-2]):
+                    j_input: int = 0
+                    for j_child_grad in range(d_child_grad[-1]):
+                        __input_nd: ndarray = _input_nd[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                        __input_grad: ndarray = _input_grad[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                        __input_grad[unravel_index(argmax(__input_nd), __input_nd.shape)] += _child_grad[i_child_grad, j_child_grad]
+                        j_input += stride[-1]
+                    i_input += stride[-2]
+        else:
+            for _input_nd, _input_grad, _child_grad in zip(input_tensor.nd, input_tensor.grad, child.grad):
+                for __input_nd, __input_grad, __child_grad in zip(_input_nd, _input_grad, _child_grad):
+                    i_input: int = 0
+                    for i_child_grad in range(d_child_grad[-2]):
+                        j_input: int = 0
+                        for j_child_grad in range(d_child_grad[-1]):
+                            ___input_nd: ndarray = __input_nd[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                            ___input_grad: ndarray = __input_grad[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                            ___input_grad[unravel_index(argmax(___input_nd), ___input_nd.shape)] += __child_grad[i_child_grad, j_child_grad]
+                            j_input += stride[-1]
+                        i_input += stride[-2]
 
-    return Tensor(output_nd, [input_tensor], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_maxpool3d(input_tensor.nd, kernel_size, stride), [input_tensor], is_leaf=False, grad_fn=grad_fn)
