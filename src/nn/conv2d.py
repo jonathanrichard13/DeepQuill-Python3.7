@@ -2,7 +2,7 @@ from cupy.random import rand
 
 from .module import Module
 from ..classes.tensor import Tensor
-from ..functional.addconvbias import addconvbias
+from ..functional.addbias import addbias
 from ..functional.conv3d import conv3d
 from ..functional.sum import sum
 from ..functional.stack import stack
@@ -11,6 +11,9 @@ from ..functional.unstack import unstack
 class Conv2d(Module):
 
     def __init__(self, input_channels: int, output_channels: int, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] = 1, padding: int | tuple[int, int] = 0, bias: bool = True):
+
+        # Initialize parent class
+        super().__init__()
         
          # TYPE CHECKS
         if not isinstance(input_channels, int):
@@ -56,5 +59,5 @@ class Conv2d(Module):
             y_unstacked.append(sum(conv3d(x, weight, self.stride, self.padding), axis=-3))
         y: Tensor = stack(y_unstacked, axis=-3)
         if self.bias is not None:
-            y = addconvbias(y, self.bias)
+            y = addbias(y, self.bias, axis=-3)
         return y
