@@ -67,13 +67,9 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | tuple[int, int] =
         y: ndarray = zeros((*d_x1[:-2], y_height, y_width))
 
         # 3D cross-correlation loop
-        i_x1: int = 0
-        for i_y in range(y_height):
-            j_x1: int = 0
-            for j_y in range(y_width):
+        for i_y, i_x1 in zip(range(y_height), range(0, (d_x1[-2] - d_x2[-2] + 1), stride[-2])):
+            for j_y, j_x1 in zip(range(y_width), range(0, (d_x1[-1] - d_x2[-1] + 1), stride[-1])):
                 y[..., i_y, j_y] = sum(multiply(x1[..., i_x1:(i_x1 + d_x2[-2]), j_x1:(j_x1 + d_x2[-1])], x2), axis=(-1, -2))
-                j_x1 += stride[-1]
-            i_x1 += stride[-2]
                 
         return y
 
@@ -83,20 +79,9 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | tuple[int, int] =
         y_height: int = d_x[-2] + ((d_x[-2] - 1) * (dilation[-2] - 1))
         y_width: int = d_x[-1] + ((d_x[-1] - 1) * (dilation[-1] - 1))
         y: ndarray = zeros((*d_x[:-2], y_height, y_width))
-        i_y: int = 0
-        for i_x in range(d_x[-2]):
-            j_y: int = 0
-            for j_x in range(d_x[-1]):
+        for i_x, i_y in zip(range(d_x[-2]), range(0, y_height, dilation[-2])):
+            for j_x, j_y in zip(range(d_x[-1]), range(0, y_width, dilation[-1])):
                 y[..., i_y, j_y] = x[..., i_x, j_x]
-                j_y += dilation[-1]
-            i_y += dilation[-2]
-        # i_x: int = 0
-        # for i_y in range(0, y_height, dilation[-2]):
-        #     j_x: int = 0
-        #     for j_y in range(0, y_width, dilation[-1]):
-        #         y[..., i_y, j_y] = x[..., i_x, j_x]
-        #         j_x += 1
-        #     i_x += 1
         return y
             
     def grad_fn(child: Tensor) -> None:

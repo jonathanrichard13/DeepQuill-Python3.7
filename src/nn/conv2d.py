@@ -1,10 +1,10 @@
-from numpy.random import rand
+from cupy.random import rand
 
 from .module import Module
 from ..classes.tensor import Tensor
 from ..functional.addconvbias import addconvbias
 from ..functional.conv3d import conv3d
-from ..functional.reduce import reduce
+from ..functional.sum import sum
 from ..functional.stack import stack
 from ..functional.unstack import unstack
 
@@ -53,8 +53,8 @@ class Conv2d(Module):
         y_unstacked: list[Tensor] = []
         weights: list[Tensor] = unstack(self.weight)
         for weight in weights:
-            y_unstacked.append(reduce(conv3d(x, weight, self.stride, self.padding)))
-        y: Tensor = stack(y_unstacked)
+            y_unstacked.append(sum(conv3d(x, weight, self.stride, self.padding), axis=-3))
+        y: Tensor = stack(y_unstacked, axis=-3)
         if self.bias is not None:
             y = addconvbias(y, self.bias)
         return y
