@@ -56,7 +56,7 @@ def avgpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
         for i_child_grad in range(d_child_grad[-2]):
             j_input_grad: int = 0
             for j_child_grad in range(d_child_grad[-1]):
-                input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])] += child.grad[..., None, None, i_child_grad, j_child_grad] * reciprocal(kernel_size[-2] * kernel_size[-1])
+                input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])] += child.grad[..., None, None, i_child_grad, j_child_grad] * reciprocal(float(kernel_size[-2] * kernel_size[-1]))
                 j_input_grad += stride[-1]
             i_input_grad += stride[-2]
 
