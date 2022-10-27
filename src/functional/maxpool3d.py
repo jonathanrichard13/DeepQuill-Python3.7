@@ -54,26 +54,26 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
     def grad_fn(child: Tensor) -> None:
         d_child_grad: tuple[int, int, int] | tuple[int, int, int, int] = child.grad.shape
         if input_tensor.grad.ndim == 3:
-            for _input_nd, _input_grad, _child_grad in zip(input_tensor.nd, input_tensor.grad, child.grad):
+            for input_nd_matrix, input_grad_matrix, child_grad_matrix in zip(input_tensor.nd, input_tensor.grad, child.grad):
                 i_input: int = 0
                 for i_child_grad in range(d_child_grad[-2]):
                     j_input: int = 0
                     for j_child_grad in range(d_child_grad[-1]):
-                        __input_nd: ndarray = _input_nd[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
-                        __input_grad: ndarray = _input_grad[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
-                        __input_grad[unravel_index(argmax(__input_nd), __input_nd.shape)] += _child_grad[i_child_grad, j_child_grad]
+                        _input_nd_matrix: ndarray = input_nd_matrix[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                        _input_grad_matrix: ndarray = input_grad_matrix[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                        _input_grad_matrix[unravel_index(argmax(_input_nd_matrix), _input_nd_matrix.shape)] += child_grad_matrix[i_child_grad, j_child_grad]
                         j_input += stride[-1]
                     i_input += stride[-2]
         else:
-            for _input_nd, _input_grad, _child_grad in zip(input_tensor.nd, input_tensor.grad, child.grad):
-                for __input_nd, __input_grad, __child_grad in zip(_input_nd, _input_grad, _child_grad):
+            for input_nd_matrices, input_grad_matrices, child_grad_matrices in zip(input_tensor.nd, input_tensor.grad, child.grad):
+                for input_nd_matrix, input_grad_matrix, child_grad_matrix in zip(input_nd_matrices, input_grad_matrices, child_grad_matrices):
                     i_input: int = 0
                     for i_child_grad in range(d_child_grad[-2]):
                         j_input: int = 0
                         for j_child_grad in range(d_child_grad[-1]):
-                            ___input_nd: ndarray = __input_nd[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
-                            ___input_grad: ndarray = __input_grad[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
-                            ___input_grad[unravel_index(argmax(___input_nd), ___input_nd.shape)] += __child_grad[i_child_grad, j_child_grad]
+                            _input_nd_matrix: ndarray = input_nd_matrix[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                            _input_grad_matrix: ndarray = input_grad_matrix[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
+                            _input_grad_matrix[unravel_index(argmax(_input_nd_matrix), _input_nd_matrix.shape)] += child_grad_matrix[i_child_grad, j_child_grad]
                             j_input += stride[-1]
                         i_input += stride[-2]
 
