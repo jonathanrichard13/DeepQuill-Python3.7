@@ -1,4 +1,4 @@
-from cupy import apply_over_axes, exp
+from cupy import apply_along_axis, exp
 
 from ..classes.tensor import Tensor
 
@@ -22,4 +22,4 @@ def sigmoid(x: Tensor) -> Tensor:
         # TODO: Check if this is correct
         x.grad += child.grad * child.nd * (1 - child.nd)
 
-    return Tensor(apply_over_axes(_sigmoid, x.nd, list(range(x.nd.ndim))), [x], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(apply_along_axis(_sigmoid, -1, x.nd.reshape(-1, 1)).reshape(x.nd.shape), [x], is_leaf=False, grad_fn=grad_fn)

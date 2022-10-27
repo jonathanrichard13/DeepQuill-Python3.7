@@ -1,5 +1,5 @@
 from numpy import ndarray
-from cupy import amax, arange, argmax, Ellipsis, int64, repeat, tile, zeros
+from cupy import amax, arange, argmax, int64, repeat, tile, zeros
 
 from ..classes.tensor import Tensor
 
@@ -67,10 +67,15 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: 
             for j_child_grad in range(d_child_grad[-1]):
                 if input_tensor.grad.ndim == 3:
                     batches_nd: ndarray = Ellipsis
-                    channels_nd: ndarray = arange(d_input_grad[-2])
+                    channels_nd: ndarray = arange(d_input_grad[-3])
                 else:
-                    batches_nd: ndarray = repeat(arange(d_input_grad[-3]), d_input_grad[-2])
-                    channels_nd: ndarray = tile(arange(d_input_grad[-2]), d_input_grad[-3])
-                input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd.flat] += child.grad[..., i_child_grad, j_child_grad].flat
+                    batches_nd: ndarray = repeat(arange(d_input_grad[-4]), d_input_grad[-3])
+                    channels_nd: ndarray = tile(arange(d_input_grad[-3]), d_input_grad[-4])
+                print(input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()])
+                print(child.grad[..., i_child_grad, j_child_grad].flatten())
+                input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()] += child.grad[..., i_child_grad, j_child_grad].flatten()
+                print(input_tensor.grad[..., i_input_grad:(i_input_grad + kernel_size[-2]), j_input_grad:(j_input_grad + kernel_size[-1])].reshape((*d_input_grad[:-2], -1))[batches_nd, channels_nd, indices_nd[..., i_child_grad, j_child_grad].flatten()])
+                j_input_grad += stride[-1]
+            i_input_grad += stride[-2]
 
     return Tensor(output_nd, [input_tensor], is_leaf=False, grad_fn=grad_fn)
