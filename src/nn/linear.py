@@ -1,13 +1,18 @@
-from numpy.random import rand
+from cupy.random import rand
 
 from .module import Module
 from ..classes.tensor import Tensor
-from ..functional.add import add
+from ..functional.addbias import addbias
+from ..functional.expand_dims import expand_dims
 from ..functional.matmul import matmul
+from ..functional.squeeze import squeeze
 
 class Linear(Module):
 
     def __init__(self, input_size: int, output_size: int, bias: bool = True):
+
+        # Initialize parent class
+        super().__init__()
         
          # TYPE CHECKS
         if not isinstance(input_size, int):
@@ -23,4 +28,4 @@ class Linear(Module):
             self.bias = Tensor(rand(output_size))
 
     def forward(self, x: Tensor) -> Tensor:
-        return add(matmul(x, self.weight), self.bias)
+        return addbias(squeeze(matmul(expand_dims(x, -2), self.weight), -2), self.bias)
