@@ -1,5 +1,5 @@
-from .module import Module
-from ..classes.tensor import Tensor
+from . import Module
+from ..classes import Tensor
 
 class Sequential(Module):
 

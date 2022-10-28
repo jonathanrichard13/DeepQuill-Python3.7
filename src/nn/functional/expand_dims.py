@@ -1,6 +1,6 @@
 from cupy import expand_dims as _expand_dims, squeeze
 
-from ...classes.tensor import Tensor
+from ...classes import Tensor
 
 def expand_dims(x: Tensor, axis: int) -> Tensor:
 

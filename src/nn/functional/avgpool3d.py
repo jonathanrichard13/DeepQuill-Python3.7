@@ -1,7 +1,7 @@
 from numpy import ndarray
 from cupy import mean, reciprocal, zeros
 
-from ...classes.tensor import Tensor
+from ...classes import Tensor
 
 def avgpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] | None = None) -> Tensor:
 

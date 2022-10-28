@@ -1,6 +1,6 @@
 from cupy import arange, ones
-from src.classes.tensor import Tensor
-from src.nn.linear import Linear
+from src.classes import Tensor
+from src.nn import Linear
 
 # Unbatched
 

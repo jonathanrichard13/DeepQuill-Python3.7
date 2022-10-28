@@ -1,6 +1,6 @@
 from cupy import arange
-from src.classes.tensor import Tensor
-from src.nn.maxpool2d import MaxPool2d
+from src.classes import Tensor
+from src.nn import MaxPool2d
 
 # Unbatched
 

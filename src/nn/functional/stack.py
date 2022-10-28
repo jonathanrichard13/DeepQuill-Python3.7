@@ -1,7 +1,7 @@
 from numpy import ndarray
 from cupy import split, squeeze, stack as _stack
 
-from ...classes.tensor import Tensor
+from ...classes import Tensor
 
 def stack(tensors: list[Tensor], axis: int = 0) -> Tensor:
 

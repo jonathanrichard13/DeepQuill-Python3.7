@@ -1,6 +1,6 @@
 from cupy import split, squeeze
 
-from ...classes.tensor import Tensor
+from ...classes import Tensor
 
 def unstack(tensor: Tensor) -> list[Tensor]:
 

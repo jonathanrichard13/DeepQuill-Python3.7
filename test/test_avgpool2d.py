@@ -1,6 +1,6 @@
 from cupy import arange
-from src.classes.tensor import Tensor
-from src.nn.avgpool2d import AvgPool2d
+from src.classes import Tensor
+from src.nn import AvgPool2d
 
 # Unbatched
 

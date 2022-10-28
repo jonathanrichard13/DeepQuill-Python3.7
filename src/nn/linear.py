@@ -1,11 +1,8 @@
 from cupy.random import rand
 
-from .module import Module
-from .functional.addbias import addbias
-from .functional.expand_dims import expand_dims
-from .functional.matmul import matmul
-from .functional.squeeze import squeeze
-from ..classes.tensor import Tensor
+from . import Module
+from .functional import addbias, expand_dims, matmul, squeeze
+from ..classes import Tensor
 
 class Linear(Module):
 

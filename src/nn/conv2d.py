@@ -1,12 +1,8 @@
 from cupy.random import rand
 
-from .module import Module
-from .functional.addbias import addbias
-from .functional.conv3d import conv3d
-from .functional.sum import sum
-from .functional.stack import stack
-from .functional.unstack import unstack
-from ..classes.tensor import Tensor
+from . import Module
+from .functional import addbias, conv3d, sum, stack, unstack
+from ..classes import Tensor
 
 class Conv2d(Module):
 

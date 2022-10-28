@@ -1,6 +1,6 @@
-from .module import Module
-from .functional.maxpool3d import maxpool3d
-from ..classes.tensor import Tensor
+from . import Module
+from .functional import maxpool3d
+from ..classes import Tensor
 
 class MaxPool2d(Module):
 

@@ -1,4 +1,4 @@
-from ..classes.tensor import Tensor
+from ..classes import Tensor
 
 class Module:
 

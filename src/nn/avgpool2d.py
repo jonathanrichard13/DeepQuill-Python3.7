@@ -1,6 +1,6 @@
-from .module import Module
-from .functional.avgpool3d import avgpool3d
-from ..classes.tensor import Tensor
+from . import Module
+from .functional import avgpool3d
+from ..classes import Tensor
 
 class AvgPool2d(Module):
 

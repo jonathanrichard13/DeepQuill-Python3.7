@@ -1,6 +1,6 @@
 from cupy import arange, ones
-from src.classes.tensor import Tensor
-from src.nn.conv2d import Conv2d
+from src.classes import Tensor
+from src.nn import Conv2d
 
 # Unbatched
 
