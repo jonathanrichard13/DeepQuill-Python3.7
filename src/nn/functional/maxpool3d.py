@@ -1,5 +1,5 @@
-from numpy import ndarray
 from cupy import amax, argmax, unravel_index, zeros
+from numpy import ndarray
 
 from ...classes import Tensor
 

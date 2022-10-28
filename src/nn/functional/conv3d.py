@@ -1,5 +1,5 @@
-from numpy import ndarray
 from cupy import flip, multiply, pad, sum, zeros
+from numpy import ndarray
 
 from ...classes import Tensor
 

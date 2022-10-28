@@ -1,5 +1,5 @@
-from numpy import ndarray
 from cupy import split, squeeze, stack as _stack
+from numpy import ndarray
 
 from ...classes import Tensor
 
