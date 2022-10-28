@@ -1,6 +1,6 @@
 from cupy import power
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def mseloss(y_tilde: Tensor, y: Tensor):
 

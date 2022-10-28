@@ -1,7 +1,7 @@
 from numpy import ndarray
 from cupy import matmul as _matmul, sum, swapaxes
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def matmul(x1: Tensor, x2: Tensor) -> Tensor:
     

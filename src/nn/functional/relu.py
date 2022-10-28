@@ -1,6 +1,6 @@
 from cupy import maximum
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def relu(x: Tensor) -> Tensor:
 

@@ -1,6 +1,6 @@
 from cupy import sum, add as _add
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def addbias(x: Tensor, b: Tensor, axis: int = -1) -> Tensor:
     

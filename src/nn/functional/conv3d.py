@@ -1,7 +1,7 @@
 from numpy import ndarray
 from cupy import flip, multiply, pad, sum, zeros
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | tuple[int, int] = 1, padding: int | tuple[int, int] = 0) -> Tensor:
     

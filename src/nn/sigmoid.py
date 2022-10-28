@@ -1,6 +1,6 @@
 from .module import Module
+from .functional.sigmoid import sigmoid
 from ..classes.tensor import Tensor
-from ..functional.sigmoid import sigmoid
 
 class Sigmoid(Module):
 

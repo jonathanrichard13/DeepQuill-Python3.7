@@ -1,6 +1,6 @@
 from cupy import add as _add
 
-from ..classes.tensor import Tensor
+from ...classes.tensor import Tensor
 
 def add(x1: Tensor, x2: Tensor) -> Tensor:
     

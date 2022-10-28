@@ -1,6 +1,6 @@
 from .module import Module
+from .functional.relu import relu
 from ..classes.tensor import Tensor
-from ..functional.relu import relu
 
 class ReLU(Module):
 
