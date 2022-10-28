@@ -1,5 +1,5 @@
 from typing import Callable
-from cupy import ndarray as cp_ndarray, zeros
+from cupy import ndarray as cdarray, zeros
 from numpy import ndarray
 
 class Tensor:
@@ -7,7 +7,7 @@ class Tensor:
     def __init__(self, nd: ndarray, parents: list = [], is_leaf: bool = True, grad_fn: Callable = None, split_idx: int = -1) -> None:
 
         # TYPE CHECKS
-        if not isinstance(nd, cp_ndarray):
+        if not isinstance(nd, cdarray):
             raise ValueError(f"nd {nd} is not an ndarray.")
         if not isinstance(parents, list):
             raise ValueError(f"Parents {parents} is not a list of Tensors.")
