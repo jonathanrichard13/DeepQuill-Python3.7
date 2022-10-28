@@ -1,16 +1,15 @@
 from cupy import expand_dims, sum as _sum, repeat
 
 from ...classes import Tensor
+from ...functions import type_check
 
 def sum(x: Tensor, axis: int = 0) -> Tensor:
     
     # TYPE CHECKS
     # x must be a Tensor
-    if not isinstance(x, Tensor):
-        raise TypeError(f"{x} is not a Tensor.")
     # axis must be an int
-    if not isinstance(axis, int):
-        raise TypeError(f"{axis} is not an int.")
+    type_check(x, "x", Tensor)
+    type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
         x.grad += repeat(expand_dims(child.grad, axis), x.grad.shape[axis], axis)

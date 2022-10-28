@@ -1,20 +1,17 @@
+from collections.abc import Collection
 from cupy import split, squeeze, stack as _stack
 from numpy import ndarray
 
 from ...classes import Tensor
+from ...functions import type_check
 
-def stack(tensors: list[Tensor], axis: int = 0) -> Tensor:
+def stack(tensors: Collection[Tensor], axis: int = 0) -> Tensor:
 
     # TYPE CHECKS
     # tensors must be a list of Tensors
-    if not isinstance(tensors, list):
-        raise TypeError(f"{tensors} is not a list of Tensors.")
-    for tensor in tensors:
-        if not isinstance(tensor, Tensor):
-            raise TypeError(f"list element {tensor} is not a Tensor.")
     # axis must be an int
-    if not isinstance(axis, int):
-        raise TypeError(f"{axis} is not an int.")
+    type_check(tensors, "tensors", Collection, Tensor)
+    type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
         child_grads: list[ndarray] = [squeeze(nd, axis) for nd in split(child.grad, child.grad.shape[axis], axis)]

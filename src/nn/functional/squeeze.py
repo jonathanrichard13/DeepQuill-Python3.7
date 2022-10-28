@@ -1,16 +1,15 @@
 from cupy import expand_dims, squeeze as _squeeze
 
 from ...classes import Tensor
+from ...functions import type_check
 
 def squeeze(x: Tensor, axis: int) -> Tensor:
 
     # TYPE CHECKS
     # x must be a Tensor
-    if not isinstance(x, Tensor):
-        raise TypeError(f"{x} is not a Tensor.")
     # axis must be an int
-    if not isinstance(axis, int):
-        raise TypeError(f"{axis} is not an int.")
+    type_check(x, "x", Tensor)
+    type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
         x.grad += expand_dims(child.grad, axis)

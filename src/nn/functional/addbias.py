@@ -1,15 +1,14 @@
 from cupy import sum, add as _add
 
 from ...classes import Tensor
+from ...functions import type_check
 
 def addbias(x: Tensor, b: Tensor, axis: int = -1) -> Tensor:
     
     # TYPE CHECKS
     # both x and b must be Tensors
-    if not isinstance(x, Tensor):
-        raise TypeError(f"{x} is not a Tensor.")
-    if not isinstance(b, Tensor):
-        raise TypeError(f"{b} is not a Tensor.")
+    type_check(x, "x", Tensor)
+    type_check(b, "b", Tensor)
 
     def grad_fn(child: Tensor) -> None:
         axes: list[int] = list(range(x.grad.ndim))

@@ -1,13 +1,13 @@
 from cupy import split, squeeze
 
 from ...classes import Tensor
+from ...functions import type_check
 
 def unstack(tensor: Tensor) -> list[Tensor]:
 
     # TYPE CHECKS
     # tensor must be a Tensor
-    if not isinstance(tensor, Tensor):
-        raise TypeError(f"{tensor} is not a Tensor.")
+    type_check(tensor, "tensor", Tensor)
 
     def grad_fn(child: Tensor) -> None:
         tensor.grad[child.split_idx] += child.grad

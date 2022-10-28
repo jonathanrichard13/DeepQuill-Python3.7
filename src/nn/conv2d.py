@@ -1,45 +1,48 @@
+from collections.abc import Collection
 from cupy.random import rand
 
 from . import Module
 from .functional import addbias, conv3d, sum, stack, unstack
 from ..classes import Tensor
+from ..functions import expr_check, len_check, type_check
 
 class Conv2d(Module):
 
-    def __init__(self, input_channels: int, output_channels: int, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] = 1, padding: int | tuple[int, int] = 0, bias: bool = True):
+    def __init__(self, input_channels: int, output_channels: int, kernel_size: int | Collection[int], stride: int | Collection[int] = 1, padding: int | Collection[int] = 0, bias: bool = True):
 
         # Initialize parent class
         super().__init__()
         
-         # TYPE CHECKS
-        if not isinstance(input_channels, int):
-            raise TypeError(f"Parameter input_channels ({input_channels}) must be an integer.")
-        if not isinstance(output_channels, int):
-            raise TypeError(f"Parameter output_channels ({output_channels}) must be an integer.")
-        if (not isinstance(kernel_size, int)) and (not isinstance(kernel_size, tuple)):
-            raise TypeError(f"Parameter kernel_size ({kernel_size}) must be either an integer or a tuple.")
-        if (not isinstance(stride, int)) and (not isinstance(stride, tuple)):
-            raise TypeError(f"Parameter stride ({stride}) must be either an integer or a tuple.")
-        if (not isinstance(padding, int)) and (not isinstance(padding, tuple)):
-            raise TypeError(f"Parameter padding ({padding}) must be either an integer or a tuple.")
-        if (not isinstance(bias, bool)):
-            raise TypeError(f"Parameter bias ({bias}) must be a boolean value.")
+        # TYPE CHECKS
+        type_check(input_channels, "input_channels", int)
+        type_check(output_channels, "output_channels", int)
+        type_check(kernel_size, "kernel_size", (int | Collection), int)
+        type_check(stride, "stride", (int | Collection), int)
+        type_check(padding, "padding", (int | Collection), int)
+        type_check(bias, "bias", bool)
     
         # cast kernel_size, stride, padding into tuple
         if isinstance(kernel_size, int):
-            kernel_size: tuple[int, int] = (kernel_size, kernel_size)
+            kernel_size = (kernel_size, kernel_size)
         if isinstance(stride, int):
-            stride: tuple[int, int] = (stride, stride)
+            stride = (stride, stride)
         if isinstance(padding, int):
-            padding: tuple[int, int] = (padding, padding)
+            padding = (padding, padding)
 
         # MISMATCHED DIMENSION CHECKS
-        if len(kernel_size) != 2:
-            raise IndexError(f"If kernel_size ({kernel_size}) is a tuple, it must be of length = 2.")
-        if len(stride) != 2:
-            raise IndexError(f"If stride ({stride}) is a tuple, it must be of length = 2.")
-        if len(padding) != 2:
-            raise IndexError(f"If padding ({padding}) is a tuple, it must be of length = 2.")
+        len_check(kernel_size, "kernel_size", 2)
+        len_check(stride, "stride", 2)
+        len_check(padding, "padding", 2)
+
+        # VALUE OUT OF RANGE CHECKS
+        expr_check(input_channels, "input_channels", lambda x: x > 0)
+        expr_check(output_channels, "output_channels", lambda x: x > 0)
+        for i_kernel_size in range(len(kernel_size)):
+            expr_check(kernel_size[i_kernel_size], f"kernel_size[{i_kernel_size}]", lambda x: x > 0)
+        for i_stride in range(len(stride)):
+            expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
+        for i_padding in range(len(padding)):
+            expr_check(padding[i_padding], f"padding[{i_padding}]", lambda x: x >= 0)
 
         self.weight: Tensor = Tensor(rand(output_channels, input_channels, kernel_size[0], kernel_size[1]))
         self.bias: Tensor | None = None

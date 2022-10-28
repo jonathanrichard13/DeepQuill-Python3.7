@@ -1,25 +1,23 @@
+from collections.abc import Collection
 from cupy import flip, multiply, pad, sum, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
+from ...functions import expr_check, len_check, type_check
 
-def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | tuple[int, int] = 1, padding: int | tuple[int, int] = 0) -> Tensor:
+def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] = 1, padding: int | Collection[int] = 0) -> Tensor:
     
     # TYPE CHECKS
-    if not isinstance(input_tensor, Tensor):
-        raise TypeError(f"Parameter input_tensor ({input_tensor}) must be a Tensor.")
-    if not isinstance(kernel, Tensor):
-        raise TypeError(f"Parameter kernel ({kernel}) must be a Tensor.")
-    if (not isinstance(stride, int)) and (not isinstance(stride, tuple)):
-        raise TypeError(f"Parameter stride ({stride}) must be either an integer or a tuple.")
-    if (not isinstance(padding, int)) and (not isinstance(padding, tuple)):
-        raise TypeError(f"Parameter padding ({padding}) must be either an integer or a tuple.")
+    type_check(input_tensor, "input_tensor", Tensor)
+    type_check(kernel, "kernel", Tensor)
+    type_check(stride, "stride", (int | Collection), int)
+    type_check(padding, "padding", (int | Collection), int)
 
     # cast stride, padding, and dilation into tuple
     if isinstance(stride, int):
-        stride: tuple[int, int] = (stride, stride)
+        stride = (stride, stride)
     if isinstance(padding, int):
-        padding: tuple[int, int] = (padding, padding)
+        padding = (padding, padding)
     
     # get ndarrays
     input_nd: ndarray = input_tensor.nd
@@ -32,21 +30,17 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | tuple[int, int] =
         raise IndexError(f"Kernel is {kernel_nd.ndim}-dimensional instead of 3-dimensional.")
     if input_nd.shape[-3] != kernel_nd.shape[-3]:
         raise IndexError(f"Input tensor with size {input_nd.shape} cannot be convolved with kernel of size {kernel_nd.shape}.")
-    if len(stride) != 2:
-        raise IndexError(f"If stride ({stride}) is a tuple, it must be of length = 2.")
-    if len(padding) != 2:
-        raise IndexError(f"If padding ({padding}) is a tuple, it must be of length = 2.")
+    len_check(stride, "stride", 2)
+    len_check(padding, "padding", 2)
 
     # VALUE OUT OF RANGE CHECKS
-    for value in stride:
-        if value < 1:
-            raise ValueError(f"Stride must be positive, not {stride}.")
-    for value in padding:
-        if value < 0:
-            raise ValueError(f"Padding must be non-negative, not {padding}.")
+    for i_stride in range(len(stride)):
+        expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
+    for i_padding in range(len(padding)):
+        expr_check(padding[i_padding], f"padding[{i_padding}]", lambda x: x >= 0)
 
     # conv3d function that returns an ndarray instead of Tensor (if numpy has a 3D convolution function, we would've borrowed it instead)
-    def _conv3d(x1: ndarray, x2: ndarray, stride: tuple[int, int], padding: tuple[int, int]) -> ndarray:
+    def _conv3d(x1: ndarray, x2: ndarray, stride: Collection[int], padding: Collection[int]) -> ndarray:
 
         # pad input image
         for p in padding:

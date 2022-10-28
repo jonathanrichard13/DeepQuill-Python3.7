@@ -1,13 +1,13 @@
 from cupy import apply_along_axis, exp
 
 from ...classes import Tensor
+from ...functions import type_check
 
 def sigmoid(x: Tensor) -> Tensor:
 
     # TYPE CHECKS
     # x must be a Tensor
-    if not isinstance(x, Tensor):
-        raise TypeError(f"{x} is not a Tensor.")
+    type_check(x, "x", Tensor)
 
     def _sigmoid(x: float) -> float:
         if x >= 0:
@@ -19,7 +19,6 @@ def sigmoid(x: Tensor) -> Tensor:
         return y
 
     def grad_fn(child: Tensor) -> None:
-        # TODO: Check if this is correct
-        x.grad += child.grad * child.nd * (1 - child.nd)
+        x.grad += (child.nd * (1 - child.nd)) * child.grad
 
     return Tensor(apply_along_axis(_sigmoid, -1, x.nd.reshape(-1, 1)).reshape(x.nd.shape), [x], is_leaf=False, grad_fn=grad_fn)

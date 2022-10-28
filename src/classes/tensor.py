@@ -2,22 +2,17 @@ from typing import Callable
 from cupy import ndarray as cdarray, zeros
 from numpy import ndarray
 
+from ..functions import type_check
+
 class Tensor:
 
     def __init__(self, nd: ndarray, parents: list = [], is_leaf: bool = True, grad_fn: Callable = None, split_idx: int = -1) -> None:
 
         # TYPE CHECKS
-        if not isinstance(nd, cdarray):
-            raise ValueError(f"nd {nd} is not an ndarray.")
-        if not isinstance(parents, list):
-            raise ValueError(f"Parents {parents} is not a list of Tensors.")
-        for parent in parents:
-            if not isinstance(parent, Tensor):
-                raise ValueError(f"Parent {parent} is not a Tensor.")
-        if not isinstance(is_leaf, bool):
-            raise ValueError(f"is_leaf {is_leaf} is not a boolean.")
-        if not isinstance(split_idx, int):
-            raise ValueError(f"split_idx {split_idx} is not an integer.")
+        type_check(nd, "nd", cdarray)
+        type_check(parents, "parents", list, Tensor)
+        type_check(is_leaf, "is_leaf", bool)
+        type_check(split_idx, "split_idx", int)
 
         # is_leaf and grad_function are either-or
         if (not is_leaf) and (grad_fn is None):

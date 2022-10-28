@@ -3,6 +3,7 @@ from cupy.random import rand
 from . import Module
 from .functional import addbias, expand_dims, matmul, squeeze
 from ..classes import Tensor
+from ..functions import expr_check, type_check
 
 class Linear(Module):
 
@@ -11,13 +12,14 @@ class Linear(Module):
         # Initialize parent class
         super().__init__()
         
-         # TYPE CHECKS
-        if not isinstance(input_size, int):
-            raise TypeError(f"Parameter input_size ({input_size}) must be an integer.")
-        if not isinstance(output_size, int):
-            raise TypeError(f"Parameter output_size ({output_size}) must be an integer.")
-        if (not isinstance(bias, bool)):
-            raise TypeError(f"Parameter bias ({bias}) must be a boolean value.")
+        # TYPE CHECKS
+        type_check(input_size, "input_size", int)
+        type_check(output_size, "output_size", int)
+        type_check(bias, "bias", bool)
+
+        # VALUE OUT OF RANGE CHECKS
+        expr_check(input_size, "input_size", lambda x: x > 0)
+        expr_check(output_size, "output_size", lambda x: x > 0)
 
         self.weight: Tensor = Tensor(rand(input_size, output_size))
         self.bias: Tensor | None = None

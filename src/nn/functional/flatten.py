@@ -1,11 +1,11 @@
 from ...classes import Tensor
+from ...functions import type_check
 
 def flatten(x: Tensor) -> Tensor:
 
     # TYPE CHECKS
     # x must be a Tensor
-    if not isinstance(x, Tensor):
-        raise TypeError(f"{x} is not a Tensor.")
+    type_check(x, "x", Tensor)
 
     def grad_fn(child: Tensor) -> None:
         x.grad += child.grad.reshape(x.grad.shape)

@@ -1,35 +1,38 @@
+from collections.abc import Collection
 from cupy import mean, reciprocal, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
+from ...functions import expr_check, len_check, type_check
 
-def avgpool3d(input_tensor: Tensor, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] | None = None) -> Tensor:
+def avgpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: int | Collection[int] | None = None) -> Tensor:
 
     # TYPE CHECKS
-    if not isinstance(input_tensor, Tensor):
-        raise TypeError(f"Input tensor {input_tensor} is not a Tensor.")
-    if (not isinstance(kernel_size, int)) and (not isinstance(kernel_size, tuple)):
-        raise TypeError(f"Parameter kernel_size ({kernel_size}) must be either an integer or a tuple.")
-    if (stride is not None) and (not isinstance(stride, int)) and (not isinstance(stride, tuple)):
-        raise TypeError(f"Parameter stride ({stride}) must be one of the following: None, integer, or a tuple.")
+    type_check(input_tensor, "input_tensor", Tensor)
+    type_check(kernel_size, "kernel_size", (int | Collection), int)
+    type_check(stride, "stride", (int | Collection | None), int)
     
     # cast kernel_size and stride into tuple
     if isinstance(kernel_size, int):
-        kernel_size: tuple[int, int] = (kernel_size, kernel_size)
+        kernel_size = (kernel_size, kernel_size)
     if stride is None:
-        stride: tuple[int, int] = kernel_size
+        stride = kernel_size
     elif isinstance(stride, int):
-        stride: tuple[int, int] = (stride, stride)
+        stride = (stride, stride)
     
     # MISMATCHED DIMENSION CHECKS
     if (input_tensor.nd.ndim != 3) and (input_tensor.nd.ndim != 4):
         raise IndexError(f"Input tensor is {input_tensor.nd.ndim}-dimensional instead of 3-or-4-dimensional.")
-    if len(kernel_size) != 2:
-        raise IndexError(f"If kernel_size ({kernel_size}) is a tuple, it must be of length = 2.")
-    if len(stride) != 2:
-        raise IndexError(f"If stride ({stride}) is a tuple, it must be of length = 2.")
+    len_check(kernel_size, "kernel_size", 2)
+    len_check(stride, "stride", 2)
+
+    # VALUE OUT OF RANGE CHECKS
+    for i_kernel_size in range(len(kernel_size)):
+        expr_check(kernel_size[i_kernel_size], f"kernel_size[{i_kernel_size}]", lambda x: x > 0)
+    for i_stride in range(len(stride)):
+        expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
     
-    def _avgpool3d(input_nd: ndarray, kernel_size: tuple[int, int], stride: tuple[int, int]) -> ndarray:
+    def _avgpool3d(input_nd: ndarray, kernel_size: Collection[int], stride: Collection[int]) -> ndarray:
 
         # get input dimensions
         d_input_nd: tuple[int, int, int] | tuple[int, int, int, int] = input_nd.shape
