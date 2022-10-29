@@ -1,6 +1,7 @@
 from .add import add
 from .addbias import addbias
 from .avgpool3d import avgpool3d
+from .concatenate import concatenate
 from .conv3d import conv3d
 from .expand_dims import expand_dims
 from .flatten import flatten
