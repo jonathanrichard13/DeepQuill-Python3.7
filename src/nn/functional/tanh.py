@@ -18,4 +18,4 @@ def tanh(x: Tensor) -> Tensor:
     def grad_fn(child: Tensor) -> None:
         x.grad += (1 - (child.nd ** 2)) * child.grad
 
-    return Tensor(_tanh(x.nd), [x], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_tanh(x.nd), [x], grad_fn=grad_fn)

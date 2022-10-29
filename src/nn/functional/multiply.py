@@ -12,4 +12,4 @@ def multiply(x1: Tensor, x2: Tensor) -> Tensor:
         x1.grad += x2.nd * child.grad
         x2.grad += x1.nd * child.grad
 
-    return Tensor(x1.nd * x2.nd, [x1, x2], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(x1.nd * x2.nd, [x1, x2], grad_fn=grad_fn)

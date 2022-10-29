@@ -12,4 +12,4 @@ def add(x1: Tensor, x2: Tensor) -> Tensor:
         x1.grad += child.grad
         x2.grad += child.grad
 
-    return Tensor(x1.nd + x2.nd, [x1, x2], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(x1.nd + x2.nd, [x1, x2], grad_fn=grad_fn)

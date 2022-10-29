@@ -104,4 +104,4 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         for i_channel in range(n_channel):
             kernel.grad[i_channel, :, :] += sum(_grad[i_channel::n_channel, :, :], axis=0)
 
-    return Tensor(_conv3d(input_nd, kernel_nd, stride, padding), [input_tensor, kernel], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_conv3d(input_nd, kernel_nd, stride, padding), [input_tensor, kernel], grad_fn=grad_fn)

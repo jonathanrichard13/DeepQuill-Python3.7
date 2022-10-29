@@ -18,4 +18,4 @@ def stack(tensors: Collection[Tensor], axis: int = 0) -> Tensor:
         for i_tensor in range(len(tensors)):
             tensors[i_tensor].grad += _child_grad[i_tensor]
 
-    return Tensor(_stack([tensor.nd for tensor in tensors], axis), [tensor for tensor in tensors], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_stack([tensor.nd for tensor in tensors], axis), [tensor for tensor in tensors], grad_fn=grad_fn)

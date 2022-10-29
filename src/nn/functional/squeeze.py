@@ -14,4 +14,4 @@ def squeeze(x: Tensor, axis: int) -> Tensor:
     def grad_fn(child: Tensor) -> None:
         x.grad += expand_dims(child.grad, axis)
 
-    return Tensor(_squeeze(x.nd, axis=axis), [x], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_squeeze(x.nd, axis=axis), [x], grad_fn=grad_fn)
