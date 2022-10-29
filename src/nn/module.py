@@ -16,6 +16,6 @@ class Module:
     def forward(self, x: Tensor) -> Tensor:
         raise NotImplementedError(f"Forward function for module type {type(self)} has not been implemented.")
 
-    def __call__(self, x: Tensor) -> Tensor:
-        y: Tensor = self.forward(x)
+    def __call__(self, x: Tensor, *args) -> Tensor:
+        y: Tensor = self.forward(x, *args)
         return y
