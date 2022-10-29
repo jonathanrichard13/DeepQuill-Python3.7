@@ -27,4 +27,7 @@ class Linear(Module):
             self.bias = Tensor(rand(output_size))
 
     def forward(self, x: Tensor) -> Tensor:
-        return addbias(squeeze(matmul(expand_dims(x, -2), self.weight), -2), self.bias)
+        y: Tensor = squeeze(matmul(expand_dims(x, -2), self.weight), -2)
+        if self.bias is not None:
+            y = addbias(y, self.bias)
+        return y
