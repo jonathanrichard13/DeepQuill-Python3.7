@@ -1,5 +1,5 @@
 from collections.abc import Collection
-from cupy import flip, multiply, pad, sum, zeros
+from cupy import flip, pad, sum, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
@@ -63,7 +63,7 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         # 3D cross-correlation loop
         for i_y, i_x1 in zip(range(y_height), range(0, (d_x1[-2] - d_x2[-2] + 1), stride[-2])):
             for j_y, j_x1 in zip(range(y_width), range(0, (d_x1[-1] - d_x2[-1] + 1), stride[-1])):
-                y[..., i_y, j_y] = sum(multiply(x1[..., i_x1:(i_x1 + d_x2[-2]), j_x1:(j_x1 + d_x2[-1])], x2), axis=(-1, -2))
+                y[..., i_y, j_y] = sum(x1[..., i_x1:(i_x1 + d_x2[-2]), j_x1:(j_x1 + d_x2[-1])] * x2, axis=(-1, -2))
                 
         return y
 

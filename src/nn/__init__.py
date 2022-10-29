@@ -7,3 +7,4 @@ from .maxpool2d import MaxPool2d
 from .relu import ReLU
 from .sequential import Sequential
 from .sigmoid import Sigmoid
+from .tanh import Tanh

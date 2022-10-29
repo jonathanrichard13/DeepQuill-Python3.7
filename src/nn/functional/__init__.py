@@ -12,4 +12,5 @@ from .sigmoid import sigmoid
 from .squeeze import squeeze
 from .stack import stack
 from .sum import sum
+from .tanh import tanh
 from .unstack import unstack
