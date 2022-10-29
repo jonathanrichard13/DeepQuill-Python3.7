@@ -24,9 +24,10 @@ class Tensor:
         self.grad_fn: Callable = grad_fn
         self.grad: ndarray = zeros(nd.shape)
         self.split_idx: int = split_idx
+        self.backward_countdown: int = 0
 
     def _backward(self):
-        if not self.is_leaf:
+        if not (self.is_leaf or (self.backward_countdown > 0)):
             if self.grad_fn is not None:
                 self.grad_fn(self)
             for parent in self.parents:
