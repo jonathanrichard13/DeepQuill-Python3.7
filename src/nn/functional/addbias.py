@@ -1,5 +1,4 @@
-from cupy import sum, add as _add
-
+from cupy import sum
 from ...classes import Tensor
 from ...functions import type_check
 
@@ -19,4 +18,4 @@ def addbias(x: Tensor, b: Tensor, axis: int = -1) -> Tensor:
         else:
             b.grad += sum(child.grad, axis=axes)
     
-    return Tensor((_add(x.nd, b.nd[(..., *[None for _ in range(~axis)]) if axis < 0 else (*[None for _ in range(axis)], ...)])), [x, b], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(x.nd + b.nd[(..., *[None for _ in range(~axis)]) if axis < 0 else (*[None for _ in range(axis)], ...)], [x, b], is_leaf=False, grad_fn=grad_fn)
