@@ -61,9 +61,6 @@ class LSTM(Module):
 
         self.cells: list[Cell] = [Cell(input_size, hidden_size, bias)]
         self.cells.extend([Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
-    
-    def __repr__(self) -> str:
-        return f"LSTM(input_size: {self.input_size}, hidden_size: {self.hidden_size}, num_layers: {self.num_layers}, bias: {self.bias})"
 
     def forward(self, x: Tensor, hc: tuple[Tensor, Tensor] | None = None) -> tuple[Tensor, tuple[Tensor, Tensor]]:
         
