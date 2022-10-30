@@ -44,19 +44,22 @@ class Conv2d(Module):
         for i_padding in range(len(padding)):
             expr_check(padding[i_padding], f"padding[{i_padding}]", lambda x: x >= 0)
 
+        self.input_channels: int = input_channels
+        self.output_channels: int = output_channels
+        self.kernel_size: tuple[int, int] = kernel_size
+        self.stride: tuple[int, int] = stride
+        self.padding: tuple[int, int] = padding
+        
         self.weight: Tensor = Tensor(rand(output_channels, input_channels, kernel_size[0], kernel_size[1]))
         self.bias: Tensor | None = None
         if bias:
             self.bias = Tensor(rand(output_channels))
-        self.stride: int | tuple[int, int] = stride
-        self.padding: int | tuple[int, int] = padding
 
     def forward(self, x: Tensor) -> Tensor:
-        y_unstacked: list[Tensor] = []
-        weights: list[Tensor] = unstack(self.weight)
-        for weight in weights:
-            y_unstacked.append(sum(conv3d(x, weight, self.stride, self.padding), axis=-3))
-        y: Tensor = stack(y_unstacked, axis=-3)
+        _y: list[Tensor] = []
+        for w in unstack(self.weight):
+            _y.append(sum(conv3d(x, w, self.stride, self.padding), axis=-3))
+        y: Tensor = stack(_y, axis=-3)
         if self.bias is not None:
             y = addbias(y, self.bias, axis=-3)
         return y

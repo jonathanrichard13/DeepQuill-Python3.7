@@ -57,7 +57,7 @@ class LSTM(Module):
         self.input_size: int = input_size
         self.hidden_size: int = hidden_size
         self.num_layers: int = num_layers
-        self.bias: int = bias
+        self.bias: bool = bias
 
         self.cells: list[_Cell] = [_Cell(input_size, hidden_size, bias)]
         self.cells.extend([_Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
@@ -67,12 +67,12 @@ class LSTM(Module):
         if hc is None:
             hc = (Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))), Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))))
         
-        y_unstacked: list[Tensor] = []
+        _y: list[Tensor] = []
         for x_t in [squeeze(tensor, -2) for tensor in split(x, x.nd.shape[-2], -2)]:
             for cell in self.cells:
                 hc = cell(x_t, hc)
                 x_t = hc[0]
-            y_unstacked.append(x_t)
+            _y.append(x_t)
         
-        y: Tensor = stack(y_unstacked, axis=-2)
+        y: Tensor = stack(_y, axis=-2)
         return y, hc

@@ -21,6 +21,9 @@ class Linear(Module):
         expr_check(input_size, "input_size", lambda x: x > 0)
         expr_check(output_size, "output_size", lambda x: x > 0)
 
+        self.input_size: int = input_size
+        self.output_size: int = output_size
+
         self.weight: Tensor = Tensor(rand(input_size, output_size))
         self.bias: Tensor | None = None
         if bias:
