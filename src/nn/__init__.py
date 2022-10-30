@@ -1,3 +1,5 @@
+from . import functional
+
 from ._module import Module
 
 from ._avgpool2d import AvgPool2d
