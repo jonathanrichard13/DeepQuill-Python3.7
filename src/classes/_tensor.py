@@ -23,6 +23,7 @@ class Tensor:
         self.n_backward: int = 0
         for parent in parents:
             parent.n_backward += 1
+        self.velocity: ndarray | None = None
     
     def _zero_i_backward(self) -> None:
         if self.i_backward != 0:
