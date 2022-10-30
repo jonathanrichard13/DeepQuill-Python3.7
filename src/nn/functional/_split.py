@@ -19,4 +19,4 @@ def split(tensor: Tensor, indices_or_sections: int, axis: int = 0) -> list[Tenso
         else:
             tensor.grad[(*[slice(None) for _ in range(axis)], slice(child.split_idx, child.split_idx + stride), *[slice(None) for _ in range(child.grad.ndim - axis - 1)])] += child.grad
 
-    return [Tensor(nd, [tensor], grad_fn=grad_fn, split_idx=i_nd) for i_nd, nd in zip(range(indices_or_sections), _split(tensor.nd, indices_or_sections, axis))]
+    return [Tensor(nd, [tensor], grad_fn=grad_fn, split_idx=i_nd) for i_nd, nd in enumerate(_split(tensor.nd, indices_or_sections, axis))]
