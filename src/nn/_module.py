@@ -2,6 +2,8 @@ from typing import Any
 
 from ..classes import Tensor
 
+_State = Tensor | dict[str, "_State"]
+
 class Module:
 
     def __init__(self) -> None:
@@ -14,8 +16,17 @@ class Module:
         self.training = False
     
     def forward(self, x: Tensor, *args) -> Tensor:
-        raise NotImplementedError(f"Forward function for module type {type(self)} has not been implemented.")
+        raise NotImplementedError(f"Forward function for module type {type(self).__name__} has not been implemented yet.")
 
+    def parameters(self) -> dict[str, _State]:
+        state_dict: dict[str, _State] = {}
+        for k, v in vars(self).items():
+            if isinstance(v, Tensor):
+                state_dict[k] = v
+            elif isinstance(v, Module):
+                state_dict[k] = v.parameters()
+        return state_dict
+    
     def __call__(self, x: Tensor, *args) -> Tensor:
         return self.forward(x, *args)
 

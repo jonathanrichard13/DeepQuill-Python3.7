@@ -21,6 +21,10 @@ class _Cell(Module):
         expr_check(input_size, "input_size", lambda x: x > 0)
         expr_check(hidden_size, "hidden_size", lambda x: x > 0)
 
+        self.input_size: int = input_size
+        self.hidden_size: int = hidden_size
+        self.bias: bool = bias
+
         self.U: Linear = Linear(input_size, hidden_size * 4, bias=bias)
         self.W: Linear = Linear(hidden_size, hidden_size * 4, bias=bias)
     
@@ -61,6 +65,8 @@ class LSTM(Module):
 
         self.cells: list[_Cell] = [_Cell(input_size, hidden_size, bias)]
         self.cells.extend([_Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
+        for i_cell, cell in enumerate(self.cells):
+            setattr(self, f"cell_{i_cell}", cell)
 
     def forward(self, x: Tensor, hc: tuple[Tensor, Tensor] | None = None) -> tuple[Tensor, tuple[Tensor, Tensor]]:
         
