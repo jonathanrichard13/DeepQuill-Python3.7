@@ -26,4 +26,4 @@ def matmul(x1: Tensor, x2: Tensor) -> Tensor:
             x1.grad += _x1_grad
             x2.grad += sum(_x2_grad, axis=list(range(x1_ndim - x2_ndim)))
 
-    return Tensor(_matmul(x1.nd, x2.nd), [x1, x2], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_matmul(x1.nd, x2.nd), [x1, x2], grad_fn=grad_fn)

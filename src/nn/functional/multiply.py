@@ -1,7 +1,7 @@
 from ...classes import Tensor
 from ...functions import type_check
 
-def add(x1: Tensor, x2: Tensor) -> Tensor:
+def multiply(x1: Tensor, x2: Tensor) -> Tensor:
     
     # TYPE CHECKS
     # both x1 and x2 must be Tensors
@@ -9,7 +9,7 @@ def add(x1: Tensor, x2: Tensor) -> Tensor:
     type_check(x2, "x2", Tensor)
 
     def grad_fn(child: Tensor) -> None:
-        x1.grad += child.grad
-        x2.grad += child.grad
+        x1.grad += x2.nd * child.grad
+        x2.grad += x1.nd * child.grad
 
-    return Tensor(x1.nd + x2.nd, [x1, x2], grad_fn=grad_fn)
+    return Tensor(x1.nd * x2.nd, [x1, x2], grad_fn=grad_fn)

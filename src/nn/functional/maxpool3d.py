@@ -69,4 +69,4 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: 
                             _input_grad_matrix: ndarray = input_grad_matrix[i_input:(i_input + kernel_size[-2]), j_input:(j_input + kernel_size[-1])]
                             _input_grad_matrix[unravel_index(argmax(_input_nd_matrix), _input_nd_matrix.shape)] += child_grad_matrix[i_child_grad, j_child_grad]
 
-    return Tensor(_maxpool3d(input_tensor.nd, kernel_size, stride), [input_tensor], is_leaf=False, grad_fn=grad_fn)
+    return Tensor(_maxpool3d(input_tensor.nd, kernel_size, stride), [input_tensor], grad_fn=grad_fn)

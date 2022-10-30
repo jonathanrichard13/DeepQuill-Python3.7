@@ -15,4 +15,4 @@ def unstack(tensor: Tensor) -> list[Tensor]:
     n_tensors = tensor.nd.shape[0]
     tensor_nds: list[Tensor] = split(tensor.nd, n_tensors, 0)
 
-    return [Tensor(squeeze(tensor_nds[i_tensor], axis=0), [tensor], is_leaf=False, grad_fn=grad_fn, split_idx=i_tensor) for i_tensor in range(n_tensors)]
+    return [Tensor(squeeze(tensor_nds[i_tensor], axis=0), [tensor], grad_fn=grad_fn, split_idx=i_tensor) for i_tensor in range(n_tensors)]

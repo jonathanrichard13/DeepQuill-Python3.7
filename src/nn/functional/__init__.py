@@ -8,8 +8,10 @@ from .flatten import flatten
 from .matmul import matmul
 from .maxpool3d import maxpool3d
 from .mseloss import mseloss
+from .multiply import multiply
 from .relu import relu
 from .sigmoid import sigmoid
+from .split import split
 from .squeeze import squeeze
 from .stack import stack
 from .sum import sum

@@ -14,4 +14,4 @@ def sum(x: Tensor, axis: int = 0) -> Tensor:
     def grad_fn(child: Tensor) -> None:
         x.grad += repeat(expand_dims(child.grad, axis), x.grad.shape[axis], axis)
 
-    return Tensor((_sum(x.nd, axis=axis)), [x], is_leaf=False, grad_fn=grad_fn)
+    return Tensor((_sum(x.nd, axis=axis)), [x], grad_fn=grad_fn)
