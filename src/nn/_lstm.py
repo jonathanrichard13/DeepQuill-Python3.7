@@ -5,7 +5,7 @@ from .functional import add, multiply, sigmoid, split, squeeze, stack, tanh
 from ..classes import Tensor
 from ..functions import type_check, expr_check
 
-class Cell(Module):
+class _Cell(Module):
 
     def __init__(self, input_size: int, hidden_size: int, bias: bool = True) -> None:
         
@@ -59,8 +59,8 @@ class LSTM(Module):
         self.num_layers: int = num_layers
         self.bias: int = bias
 
-        self.cells: list[Cell] = [Cell(input_size, hidden_size, bias)]
-        self.cells.extend([Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
+        self.cells: list[_Cell] = [_Cell(input_size, hidden_size, bias)]
+        self.cells.extend([_Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
 
     def forward(self, x: Tensor, hc: tuple[Tensor, Tensor] | None = None) -> tuple[Tensor, tuple[Tensor, Tensor]]:
         
