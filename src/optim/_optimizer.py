@@ -11,13 +11,13 @@ class Optimizer:
         self.params: dict[str, _State] = params
     
     def _modify_params(self, expr: Callable[[Tensor], None]) -> None:
-        _params: list[_State] = list(self.params.values())
+        values: list[_State] = list(self.params.values())
         visited: set[_State] = set()
-        while len(_params) > 0:
-            v = _params.pop()
+        while len(values) > 0:
+            v = values.pop(0)
             if isinstance(v, dict):
                 if v not in visited:
-                    _params.extend(list(v.values()))
+                    values.extend(list(v.values()))
             else:
                 expr(v)
             visited.add(v)
