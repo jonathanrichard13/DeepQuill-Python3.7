@@ -57,7 +57,7 @@ class Conv2d(Module):
 
     def forward(self, x: Tensor) -> Tensor:
         _y: list[Tensor] = []
-        for w in unstack(self.weight):
+        for w in unstack(self.weight, axis=0):
             _y.append(sum(conv3d(x, w, self.stride, self.padding), axis=-3))
         y: Tensor = stack(_y, axis=-3)
         if self.bias is not None:
