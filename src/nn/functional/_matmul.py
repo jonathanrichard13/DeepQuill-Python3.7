@@ -20,10 +20,10 @@ def matmul(x1: Tensor, x2: Tensor) -> Tensor:
             x1.grad += _x1_grad
             x2.grad += _x2_grad
         elif x1_ndim < x2_ndim:
-            x1.grad += sum(_x1_grad, axis=list(range(x2_ndim - x1_ndim)))
+            x1.grad += sum(_x1_grad, axis=tuple(range(x2_ndim - x1_ndim)))
             x2.grad += _x2_grad
         else:
             x1.grad += _x1_grad
-            x2.grad += sum(_x2_grad, axis=list(range(x1_ndim - x2_ndim)))
+            x2.grad += sum(_x2_grad, axis=tuple(range(x1_ndim - x2_ndim)))
 
     return Tensor(_matmul(x1.nd, x2.nd), [x1, x2], grad_fn=grad_fn)
