@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 from cupy import zeros
 
 from ..classes import Tensor

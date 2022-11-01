@@ -1,4 +1,3 @@
-from collections.abc import Collection
 from typing import Any
 
 def len_check(obj: Any, nameof_obj: str, length: int) -> None:
