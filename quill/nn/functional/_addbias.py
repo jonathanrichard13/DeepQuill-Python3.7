@@ -1,4 +1,5 @@
 from cupy import sum
+
 from ...classes import Tensor
 from ...functions import type_check
 
