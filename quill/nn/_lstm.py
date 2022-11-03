@@ -73,12 +73,22 @@ class LSTM(Module):
         if hc is None:
             hc = (Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))), Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))))
         
+        _x: list[Tensor] = [squeeze(tensor, -2) for tensor in split(x, x.nd.shape[-2], -2)]
+        n: int = len(_x)
         _y: list[Tensor] = []
-        for x_t in [squeeze(tensor, -2) for tensor in split(x, x.nd.shape[-2], -2)]:
+        _h_n: list[Tensor] = []
+        _c_n: list[Tensor] = []
+        for t in range(n):
+            h: Tensor = _x[t]
             for cell in self.cells:
-                hc = cell(x_t, hc)
-                x_t = hc[0]
-            _y.append(x_t)
+                hc = cell(h, hc)
+                h = hc[0]
+                if (t + 1) == n:
+                    _h_n.append(hc[0])
+                    _c_n.append(hc[1])
+            _y.append(h)
         
         y: Tensor = stack(_y, axis=-2)
-        return y, hc
+        h_n: Tensor = stack(_h_n, axis=-2)
+        c_n: Tensor = stack(_c_n, axis=-2)
+        return y, (h_n, c_n)
