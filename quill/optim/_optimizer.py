@@ -12,15 +12,15 @@ class Optimizer:
     
     def _modify_params(self, expr: Callable[[Tensor], None]) -> None:
         values: list[_State] = list(self.params.values())
-        visited: set[_State] = set()
+        visited: list[_State] = []
         while len(values) > 0:
-            v = values.pop(0)
-            if isinstance(v, dict):
-                if v not in visited:
+            v: _State = values.pop(0)
+            if v not in visited:
+                if isinstance(v, dict):
                     values.extend(list(v.values()))
-            else:
-                expr(v)
-            visited.add(v)
+                else:
+                    expr(v)
+                visited.add(v)
     
     def zero_grad(self) -> None:
         def _zero_grad_and_reset_velocity(x: Tensor) -> None:
