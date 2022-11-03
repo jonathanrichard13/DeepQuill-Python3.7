@@ -1,4 +1,4 @@
-from typing import Collection, List, Tuple, Union
+from typing import List, Sequence, Tuple, Union
 from cupy.random import rand
 
 from . import Module
@@ -8,7 +8,7 @@ from ..functions import expr_check, len_check, type_check
 
 class Conv2d(Module):
 
-    def __init__(self, input_channels: int, output_channels: int, kernel_size: Union[int, Collection[int]], stride: Union[int, Collection[int]] = 1, padding: Union[int, Collection[int]] = 0, bias: bool = True):
+    def __init__(self, input_channels: int, output_channels: int, kernel_size: Union[int, Sequence[int]], stride: Union[int, Sequence[int]] = 1, padding: Union[int, Sequence[int]] = 0, bias: bool = True):
 
         # Initialize parent class
         super().__init__()
@@ -16,9 +16,9 @@ class Conv2d(Module):
         # TYPE CHECKS
         type_check(input_channels, "input_channels", int)
         type_check(output_channels, "output_channels", int)
-        type_check(kernel_size, "kernel_size", (int, Collection), int)
-        type_check(stride, "stride", (int, Collection), int)
-        type_check(padding, "padding", (int, Collection), int)
+        type_check(kernel_size, "kernel_size", (int, Sequence), int)
+        type_check(stride, "stride", (int, Sequence), int)
+        type_check(padding, "padding", (int, Sequence), int)
         type_check(bias, "bias", bool)
     
         # cast kernel_size, stride, padding into tuple

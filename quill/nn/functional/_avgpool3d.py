@@ -1,16 +1,16 @@
-from typing import Collection, Tuple, Union
+from typing import Sequence, Tuple, Union
 from cupy import mean, reciprocal, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import expr_check, len_check, type_check
 
-def avgpool3d(input_tensor: Tensor, kernel_size: Union[int, Collection[int]], stride: Union[int, Collection[int], None] = None) -> Tensor:
+def avgpool3d(input_tensor: Tensor, kernel_size: Union[int, Sequence[int]], stride: Union[int, Sequence[int], None] = None) -> Tensor:
 
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
-    type_check(kernel_size, "kernel_size", (int, Collection), int)
-    type_check(stride, "stride", (int, Collection, None), int)
+    type_check(kernel_size, "kernel_size", (int, Sequence), int)
+    type_check(stride, "stride", (int, Sequence, None), int)
     
     # cast kernel_size and stride into tuple
     if isinstance(kernel_size, int):
@@ -32,7 +32,7 @@ def avgpool3d(input_tensor: Tensor, kernel_size: Union[int, Collection[int]], st
     for i_stride in range(len(stride)):
         expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
     
-    def _avgpool3d(input_nd: ndarray, kernel_size: Collection[int], stride: Collection[int]) -> ndarray:
+    def _avgpool3d(input_nd: ndarray, kernel_size: Sequence[int], stride: Sequence[int]) -> ndarray:
 
         # get input dimensions
         d_input_nd: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = input_nd.shape
