@@ -10,6 +10,7 @@ from ._maxpool3d import maxpool3d
 from ._mseloss import mseloss
 from ._multiply import multiply
 from ._relu import relu
+from ._reshape import reshape
 from ._sigmoid import sigmoid
 from ._split import split
 from ._squeeze import squeeze
