@@ -2,7 +2,7 @@ from collections.abc import Generator
 from random import shuffle
 
 from . import Dataset
-from ...classes import Tensor
+from ...core import Tensor
 from ...nn.functional import stack
 
 class DataLoader:

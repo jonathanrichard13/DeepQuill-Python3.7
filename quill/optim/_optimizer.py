@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from cupy import zeros
 
-from ..classes import Tensor
+from ..core import Tensor
 
 _State = Tensor | dict[str, "_State"]
 

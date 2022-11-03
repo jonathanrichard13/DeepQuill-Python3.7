@@ -3,7 +3,7 @@ from cupy.random import rand
 
 from . import Module
 from .functional import addbias, conv3d, sum, stack, unstack
-from ..classes import Tensor
+from ..core import Tensor
 from ..internals import expr_check, len_check, type_check
 
 class Conv2d(Module):

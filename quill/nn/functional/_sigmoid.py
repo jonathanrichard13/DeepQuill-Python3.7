@@ -1,6 +1,6 @@
 from cupy import apply_along_axis, exp
 
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import type_check
 
 def sigmoid(x: Tensor) -> Tensor:

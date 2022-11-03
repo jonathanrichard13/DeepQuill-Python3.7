@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import type_check
 
 def reshape(x: Tensor, newshape: Sequence[int]) -> Tensor:

@@ -1,1 +1,1 @@
-from . import classes, internals, nn, optim, utils
+from . import core, internals, nn, optim, utils

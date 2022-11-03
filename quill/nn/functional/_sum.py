@@ -1,6 +1,6 @@
 from cupy import expand_dims, sum as _sum, repeat
 
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import type_check
 
 def sum(x: Tensor, axis: int = 0) -> Tensor:

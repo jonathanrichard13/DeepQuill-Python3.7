@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 from . import Module
 from .functional import maxpool3d
-from ..classes import Tensor
+from ..core import Tensor
 from ..internals import expr_check, len_check, type_check
 
 class MaxPool2d(Module):

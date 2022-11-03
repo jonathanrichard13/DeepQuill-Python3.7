@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from cupy import mean, reciprocal, zeros
 from numpy import ndarray
 
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import expr_check, len_check, type_check
 
 def avgpool3d(input_tensor: Tensor, kernel_size: int | Sequence[int], stride: int | Sequence[int] | None = None) -> Tensor:

@@ -1,6 +1,6 @@
 from cupy import split, squeeze
 
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import type_check
 
 def unstack(tensor: Tensor, axis: int = 0) -> list[Tensor]:

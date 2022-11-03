@@ -1,5 +1,5 @@
 from . import Optimizer
-from ..classes import Tensor
+from ..core import Tensor
 
 _State = Tensor | dict[str, "_State"]
 

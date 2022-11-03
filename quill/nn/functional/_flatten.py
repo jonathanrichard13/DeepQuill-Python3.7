@@ -1,4 +1,4 @@
-from ...classes import Tensor
+from ...core import Tensor
 from ...internals import type_check
 
 def flatten(x: Tensor) -> Tensor:
