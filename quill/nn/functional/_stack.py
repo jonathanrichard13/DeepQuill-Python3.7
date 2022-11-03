@@ -8,7 +8,7 @@ from ...functions import type_check
 def stack(tensors: Sequence[Tensor], axis: int = 0) -> Tensor:
 
     # TYPE CHECKS
-    # tensors must be a list of Tensors
+    # tensors must be a sequence of Tensors
     # axis must be an int
     type_check(tensors, "tensors", Sequence, Tensor)
     type_check(axis, "axis", int)
