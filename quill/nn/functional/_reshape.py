@@ -3,11 +3,11 @@ from typing import Sequence
 from ...classes import Tensor
 from ...functions import type_check
 
-def reshape(x: Tensor, newshape: tuple[int]) -> Tensor:
+def reshape(x: Tensor, newshape: Sequence[int]) -> Tensor:
 
     # TYPE CHECKS
     # x must be a Tensor
-    # newshape must be a tuple of ints
+    # newshape must be a sequence of ints
     type_check(x, "x", Tensor)
     type_check(newshape, "newshape", Sequence, int)
 
