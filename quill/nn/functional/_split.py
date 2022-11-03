@@ -1,7 +1,7 @@
 from cupy import split as _split
 
 from ...classes import Tensor
-from ...functions import type_check
+from ...internals import type_check
 
 def split(tensor: Tensor, indices_or_sections: int, axis: int = 0) -> list[Tensor]:
 

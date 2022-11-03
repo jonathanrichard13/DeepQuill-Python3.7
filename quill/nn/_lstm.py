@@ -3,7 +3,7 @@ from cupy import zeros
 from . import Module, Linear
 from .functional import add, multiply, sigmoid, split, squeeze, stack, tanh
 from ..classes import Tensor
-from ..functions import type_check, expr_check
+from ..internals import type_check, expr_check
 
 class _Cell(Module):
 

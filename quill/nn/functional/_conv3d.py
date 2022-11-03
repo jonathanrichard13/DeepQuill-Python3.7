@@ -3,7 +3,7 @@ from cupy import flip, pad, sum, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
-from ...functions import expr_check, len_check, type_check
+from ...internals import expr_check, len_check, type_check
 
 def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Sequence[int] = 1, padding: int | Sequence[int] = 0) -> Tensor:
     

@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from . import Module
 from .functional import avgpool3d
 from ..classes import Tensor
-from ..functions import type_check, len_check, expr_check
+from ..internals import type_check, len_check, expr_check
 
 class AvgPool2d(Module):
 

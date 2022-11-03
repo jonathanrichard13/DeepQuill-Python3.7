@@ -2,7 +2,7 @@ from numpy import ndarray
 from cupy import matmul as _matmul, sum, swapaxes
 
 from ...classes import Tensor
-from ...functions import type_check
+from ...internals import type_check
 
 def matmul(x1: Tensor, x2: Tensor) -> Tensor:
     

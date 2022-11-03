@@ -1,5 +1,5 @@
 from ...classes import Tensor
-from ...functions import type_check
+from ...internals import type_check
 
 def multiply(x1: Tensor, x2: Tensor) -> Tensor:
     

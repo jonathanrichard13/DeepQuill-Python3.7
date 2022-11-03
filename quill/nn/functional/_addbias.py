@@ -1,7 +1,7 @@
 from cupy import sum
 
 from ...classes import Tensor
-from ...functions import type_check
+from ...internals import type_check
 
 def addbias(x: Tensor, b: Tensor, axis: int = -1) -> Tensor:
     

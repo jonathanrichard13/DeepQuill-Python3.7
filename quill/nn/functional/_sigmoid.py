@@ -1,7 +1,7 @@
 from cupy import apply_along_axis, exp
 
 from ...classes import Tensor
-from ...functions import type_check
+from ...internals import type_check
 
 def sigmoid(x: Tensor) -> Tensor:
 
