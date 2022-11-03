@@ -1,16 +1,16 @@
-from collections.abc import Collection
+from collections.abc import Sequence
 from cupy import split, squeeze, stack as _stack
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import type_check
 
-def stack(tensors: Collection[Tensor], axis: int = 0) -> Tensor:
+def stack(tensors: Sequence[Tensor], axis: int = 0) -> Tensor:
 
     # TYPE CHECKS
-    # tensors must be a list of Tensors
+    # tensors must be a sequence of Tensors
     # axis must be an int
-    type_check(tensors, "tensors", Collection, Tensor)
+    type_check(tensors, "tensors", Sequence, Tensor)
     type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
