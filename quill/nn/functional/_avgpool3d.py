@@ -10,7 +10,7 @@ def avgpool3d(input_tensor: Tensor, kernel_size: Union[int, Sequence[int]], stri
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
     type_check(kernel_size, "kernel_size", (int, Sequence), int)
-    type_check(stride, "stride", (int, Sequence, None), int)
+    type_check(stride, "stride", (int, Sequence, type(None)), int)
     
     # cast kernel_size and stride into tuple
     if isinstance(kernel_size, int):
