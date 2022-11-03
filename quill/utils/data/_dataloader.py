@@ -7,7 +7,7 @@ from ...nn.functional import stack
 
 class DataLoader:
 
-    def __init__(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = True) -> None:
+    def __init__(self, dataset: Dataset, batch_size: int = 1, shuffle: bool = False) -> None:
         self.dataset: Dataset = dataset
         self.batch_size: int = batch_size
         self.shuffle: bool = shuffle
