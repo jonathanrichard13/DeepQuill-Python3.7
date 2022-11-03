@@ -1,9 +1,10 @@
+from typing import List
 from cupy import split, squeeze
 
 from ...classes import Tensor
 from ...functions import type_check
 
-def unstack(tensor: Tensor, axis: int = 0) -> list[Tensor]:
+def unstack(tensor: Tensor, axis: int = 0) -> List[Tensor]:
 
     # TYPE CHECKS
     # tensor must be a Tensor

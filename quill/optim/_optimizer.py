@@ -1,18 +1,18 @@
-from collections.abc import Callable
+from typing import Callable, Dict, List, Set, Union
 from cupy import zeros
 
 from ..classes import Tensor
 
-_State = Tensor | dict[str, "_State"]
+_State = Union[Tensor, Dict[str, "_State"]]
 
 class Optimizer:
 
-    def __init__(self, params: dict[str, _State]) -> None:
-        self.params: dict[str, _State] = params
+    def __init__(self, params: Dict[str, _State]) -> None:
+        self.params: Dict[str, _State] = params
     
     def _modify_params(self, expr: Callable[[Tensor], None]) -> None:
-        values: list[_State] = list(self.params.values())
-        visited: set[_State] = set()
+        values: List[_State] = list(self.params.values())
+        visited: Set[_State] = set()
         while len(values) > 0:
             v = values.pop(0)
             if isinstance(v, dict):

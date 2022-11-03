@@ -1,4 +1,4 @@
-from collections.abc import Collection
+from typing import Collection, List, Tuple, Union
 from cupy.random import rand
 
 from . import Module
@@ -8,7 +8,7 @@ from ..functions import expr_check, len_check, type_check
 
 class Conv2d(Module):
 
-    def __init__(self, input_channels: int, output_channels: int, kernel_size: int | Collection[int], stride: int | Collection[int] = 1, padding: int | Collection[int] = 0, bias: bool = True):
+    def __init__(self, input_channels: int, output_channels: int, kernel_size: Union[int, Collection[int]], stride: Union[int, Collection[int]] = 1, padding: Union[int, Collection[int]] = 0, bias: bool = True):
 
         # Initialize parent class
         super().__init__()
@@ -16,9 +16,9 @@ class Conv2d(Module):
         # TYPE CHECKS
         type_check(input_channels, "input_channels", int)
         type_check(output_channels, "output_channels", int)
-        type_check(kernel_size, "kernel_size", (int | Collection), int)
-        type_check(stride, "stride", (int | Collection), int)
-        type_check(padding, "padding", (int | Collection), int)
+        type_check(kernel_size, "kernel_size", (int, Collection), int)
+        type_check(stride, "stride", (int, Collection), int)
+        type_check(padding, "padding", (int, Collection), int)
         type_check(bias, "bias", bool)
     
         # cast kernel_size, stride, padding into tuple
@@ -46,17 +46,17 @@ class Conv2d(Module):
 
         self.input_channels: int = input_channels
         self.output_channels: int = output_channels
-        self.kernel_size: tuple[int, int] = kernel_size
-        self.stride: tuple[int, int] = stride
-        self.padding: tuple[int, int] = padding
+        self.kernel_size: Tuple[int, int] = kernel_size
+        self.stride: Tuple[int, int] = stride
+        self.padding: Tuple[int, int] = padding
         
         self.weight: Tensor = Tensor(rand(output_channels, input_channels, kernel_size[0], kernel_size[1]))
-        self.bias: Tensor | None = None
+        self.bias: Union[Tensor, None] = None
         if bias:
             self.bias = Tensor(rand(output_channels))
 
     def forward(self, x: Tensor) -> Tensor:
-        _y: list[Tensor] = []
+        _y: List[Tensor] = []
         for w in unstack(self.weight, axis=0):
             _y.append(sum(conv3d(x, w, self.stride, self.padding), axis=-3))
         y: Tensor = stack(_y, axis=-3)

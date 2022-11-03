@@ -1,9 +1,10 @@
+from typing import List
 from cupy import split as _split
 
 from ...classes import Tensor
 from ...functions import type_check
 
-def split(tensor: Tensor, indices_or_sections: int, axis: int = 0) -> list[Tensor]:
+def split(tensor: Tensor, indices_or_sections: int, axis: int = 0) -> List[Tensor]:
 
     # TYPE CHECKS
     # tensor must be a Tensor

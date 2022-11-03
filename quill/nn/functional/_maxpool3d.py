@@ -1,16 +1,16 @@
-from collections.abc import Collection
+from typing import Collection, Tuple, Union
 from cupy import amax, argmax, unravel_index, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import expr_check, len_check, type_check
 
-def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: int | Collection[int] | None = None) -> Tensor:
+def maxpool3d(input_tensor: Tensor, kernel_size: Union[int, Collection[int]], stride: Union[int, Collection[int], None] = None) -> Tensor:
 
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
-    type_check(kernel_size, "kernel_size", (int | Collection), int)
-    type_check(stride, "stride", (int | Collection | None), int)
+    type_check(kernel_size, "kernel_size", (int, Collection), int)
+    type_check(stride, "stride", (int, Collection, None), int)
     
     # cast kernel_size and stride into tuple
     if isinstance(kernel_size, int):
@@ -35,7 +35,7 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: 
     def _maxpool3d(input_nd: ndarray, kernel_size: Collection[int], stride: Collection[int]) -> ndarray:
 
         # get input dimensions
-        d_input_nd: tuple[int, int, int] | tuple[int, int, int, int] = input_nd.shape
+        d_input_nd: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = input_nd.shape
 
         # create output image
         output_nd_height: int = ((d_input_nd[-2] - kernel_size[-2]) // stride[-2]) + 1
@@ -51,8 +51,8 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: 
         return output_nd
 
     def grad_fn(child: Tensor) -> None:
-        d_input: tuple[int, int, int] | tuple[int, int, int, int] = input_tensor.nd.shape
-        d_child_grad: tuple[int, int, int] | tuple[int, int, int, int] = child.grad.shape
+        d_input: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = input_tensor.nd.shape
+        d_child_grad: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = child.grad.shape
         if input_tensor.grad.ndim == 3:
             for input_nd_matrix, input_grad_matrix, child_grad_matrix in zip(input_tensor.nd, input_tensor.grad, child.grad):
                 for i_child_grad, i_input in zip(range(d_child_grad[-2]), range(0, (d_input[-2] - kernel_size[-2] + 1), stride[-2])):

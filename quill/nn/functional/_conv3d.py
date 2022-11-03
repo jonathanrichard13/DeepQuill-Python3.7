@@ -1,17 +1,17 @@
-from collections.abc import Collection
+from typing import Collection, Tuple, Union
 from cupy import flip, pad, sum, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import expr_check, len_check, type_check
 
-def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] = 1, padding: int | Collection[int] = 0) -> Tensor:
+def conv3d(input_tensor: Tensor, kernel: Tensor, stride: Union[int, Collection[int]] = 1, padding: Union[int, Collection[int]] = 0) -> Tensor:
     
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
     type_check(kernel, "kernel", Tensor)
-    type_check(stride, "stride", (int | Collection), int)
-    type_check(padding, "padding", (int | Collection), int)
+    type_check(stride, "stride", (int, Collection), int)
+    type_check(padding, "padding", (int, Collection), int)
 
     # cast stride, padding, and dilation into tuple
     if isinstance(stride, int):
@@ -52,8 +52,8 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
                 break
 
         # get input and kernel dimensions
-        d_x1: tuple[int, int, int] | tuple[int, int, int, int] = x1.shape
-        d_x2: tuple[int, int, int] = x2.shape
+        d_x1: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = x1.shape
+        d_x2: Tuple[int, int, int] = x2.shape
         
         # create output image
         y_height: int = ((d_x1[-2] + 2 * padding[-2] - d_x2[-2]) // stride[-2]) + 1
@@ -68,8 +68,8 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         return y
 
     # dilation function, only used by grad_fn
-    def _dilate(x: ndarray, dilation: tuple[int, int]) -> ndarray:
-        d_x: tuple[int, int, int] | tuple[int, int, int, int] = x.shape
+    def _dilate(x: ndarray, dilation: Tuple[int, int]) -> ndarray:
+        d_x: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = x.shape
         y_height: int = d_x[-2] + ((d_x[-2] - 1) * (dilation[-2] - 1))
         y_width: int = d_x[-1] + ((d_x[-1] - 1) * (dilation[-1] - 1))
         y: ndarray = zeros((*d_x[:-2], y_height, y_width))
@@ -84,8 +84,8 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         grad: ndarray = _dilate(child.grad, stride)
 
         # calculate 'outer padding' (pad for pixels that were not convoluted in forward pass)
-        d_input: tuple[int, int, int] | tuple[int, int, int, int] = input_nd.shape
-        d_kernel: tuple[int, int, int] = kernel_nd.shape
+        d_input: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = input_nd.shape
+        d_kernel: Tuple[int, int, int] = kernel_nd.shape
         outer_padding_height: int = (d_input[-2] + 2 * padding[-2] - d_kernel[-2]) % stride[-2]
         outer_padding_width: int = (d_input[-1] + 2 * padding[-1] - d_kernel[-1]) % stride[-1]
         
@@ -98,7 +98,7 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         input_tensor.grad += _grad[..., padding[-2]:(padding[-2] + d_input[-2]), padding[-1]:(padding[-1] + d_input[-1])]
 
         # calculate gradient for kernel
-        d_grad: tuple[int, int, int] | tuple[int, int, int, int] = grad.shape
+        d_grad: Union[Tuple[int, int, int], Tuple[int, int, int, int]] = grad.shape
         _grad: ndarray = _conv3d(input_nd.reshape((-1, d_input[-2], d_input[-1])), grad.reshape((-1, d_grad[-2], d_grad[-1])), (1, 1), padding)[:, :d_kernel[-2], :d_kernel[-1]]
         n_channel: int = kernel.grad.shape[-3]
         for i_channel in range(n_channel):

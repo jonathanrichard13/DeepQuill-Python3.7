@@ -1,3 +1,5 @@
+from typing import List
+
 from . import Module
 from ..classes import Tensor
 
@@ -5,7 +7,7 @@ class Sequential(Module):
 
     def __init__(self, *modules: Module) -> None:
         super().__init__()
-        self.modules: list[Module] = []
+        self.modules: List[Module] = []
         for module in modules:
             self.append(module)
     

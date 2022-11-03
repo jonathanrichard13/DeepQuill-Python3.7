@@ -1,6 +1,5 @@
-from collections.abc import Callable
 from inspect import getsource
-from typing import TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar("T")
 

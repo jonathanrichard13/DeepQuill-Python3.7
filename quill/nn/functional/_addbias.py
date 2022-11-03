@@ -1,3 +1,4 @@
+from typing import List
 from cupy import sum
 
 from ...classes import Tensor
@@ -11,7 +12,7 @@ def addbias(x: Tensor, b: Tensor, axis: int = -1) -> Tensor:
     type_check(b, "b", Tensor)
 
     def grad_fn(child: Tensor) -> None:
-        axes: list[int] = list(range(x.grad.ndim))
+        axes: List[int] = list(range(x.grad.ndim))
         axes.pop(axis)
         x.grad += child.grad
         if len(axes) == 0:
