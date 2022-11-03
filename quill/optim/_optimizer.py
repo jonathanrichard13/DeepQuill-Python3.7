@@ -14,7 +14,7 @@ class Optimizer:
         values: list[_State] = list(self.params.values())
         visited: list[_State] = []
         while len(values) > 0:
-            v = values.pop(0)
+            v: _State = values.pop(0)
             if v not in visited:
                 if isinstance(v, dict):
                     values.extend(list(v.values()))
