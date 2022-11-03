@@ -34,8 +34,8 @@ class AvgPool2d(Module):
         for i_stride in range(len(stride)):
             expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
 
-        self.kernel_size: int | tuple[int, int] = kernel_size
-        self.stride: int | tuple[int, int] | None = stride
+        self.kernel_size: tuple[int, int] = kernel_size
+        self.stride: tuple[int, int] = stride
     
     def forward(self, x: Tensor) -> Tensor:
         return avgpool3d(x, self.kernel_size, self.stride)
