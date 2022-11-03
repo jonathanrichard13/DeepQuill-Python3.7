@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Set, Union
+from typing import Callable, Dict, List, Union
 from cupy import zeros
 
 from ..classes import Tensor
@@ -12,15 +12,15 @@ class Optimizer:
     
     def _modify_params(self, expr: Callable[[Tensor], None]) -> None:
         values: List[_State] = list(self.params.values())
-        visited: Set[_State] = set()
+        visited: List[_State] = []
         while len(values) > 0:
-            v = values.pop(0)
-            if isinstance(v, dict):
-                if v not in visited:
+            v: _State = values.pop(0)
+            if v not in visited:
+                if isinstance(v, dict):
                     values.extend(list(v.values()))
-            else:
-                expr(v)
-            visited.add(v)
+                else:
+                    expr(v)
+                visited.add(v)
     
     def zero_grad(self) -> None:
         def _zero_grad_and_reset_velocity(x: Tensor) -> None:
