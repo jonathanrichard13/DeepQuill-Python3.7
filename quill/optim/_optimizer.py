@@ -20,7 +20,7 @@ class Optimizer:
                     values.extend(list(v.values()))
                 else:
                     expr(v)
-                visited.add(v)
+                visited.append(v)
     
     def zero_grad(self) -> None:
         def _zero_grad_and_reset_velocity(x: Tensor) -> None:
