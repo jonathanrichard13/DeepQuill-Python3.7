@@ -1,4 +1,4 @@
-from collections.abc import Collection
+from typing import Collection, List
 from cupy import split, squeeze, stack as _stack
 from numpy import ndarray
 
@@ -14,7 +14,7 @@ def stack(tensors: Collection[Tensor], axis: int = 0) -> Tensor:
     type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
-        _child_grad: list[ndarray] = [squeeze(_grad, axis) for _grad in split(child.grad, child.grad.shape[axis], axis)]
+        _child_grad: List[ndarray] = [squeeze(_grad, axis) for _grad in split(child.grad, child.grad.shape[axis], axis)]
         for i_tensor in range(len(tensors)):
             tensors[i_tensor].grad += _child_grad[i_tensor]
 

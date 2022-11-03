@@ -1,8 +1,8 @@
-from typing import Any
+from typing import Any, Dict, Union
 
 from ..classes import Tensor
 
-_State = Tensor | dict[str, "_State"]
+_State = Union[Tensor, Dict[str, "_State"]]
 
 class Module:
 
@@ -18,8 +18,8 @@ class Module:
     def forward(self, x: Tensor, *args) -> Tensor:
         raise NotImplementedError(f"Forward function for module type {type(self).__name__} has not been implemented yet.")
 
-    def parameters(self) -> dict[str, _State]:
-        state_dict: dict[str, _State] = {}
+    def parameters(self) -> Dict[str, _State]:
+        state_dict: Dict[str, _State] = {}
         for k, v in vars(self).items():
             if isinstance(v, Tensor):
                 state_dict[k] = v
@@ -32,9 +32,9 @@ class Module:
 
     def __repr__(self) -> str:
         lines: str = f"{type(self).__name__}("
-        default_attributes: dict[str, Any] = vars(Module())
-        parameters: dict[str, Any] = {}
-        submodules: dict[str, Any] = {}
+        default_attributes: Dict[str, Any] = vars(Module())
+        parameters: Dict[str, Any] = {}
+        submodules: Dict[str, Any] = {}
         for k, v in vars(self).items():
             if k not in default_attributes:
                 if isinstance(v, Module):

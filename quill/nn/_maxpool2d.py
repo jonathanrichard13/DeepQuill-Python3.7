@@ -1,4 +1,4 @@
-from collections.abc import Collection
+from typing import Collection, Tuple, Union
 
 from . import Module
 from .functional import maxpool3d
@@ -7,14 +7,14 @@ from ..functions import expr_check, len_check, type_check
 
 class MaxPool2d(Module):
 
-    def __init__(self, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] | None = None) -> None:
+    def __init__(self, kernel_size: Union[int, Tuple[int, int]], stride: Union[int, Tuple[int, int], None] = None) -> None:
 
         # Initialize parent class
         super().__init__()
 
         # TYPE CHECKS
-        type_check(kernel_size, "kernel_size", (int | Collection), int)
-        type_check(stride, "stride", (int | Collection | None), int)
+        type_check(kernel_size, "kernel_size", (int, Collection), int)
+        type_check(stride, "stride", (int, Collection, None), int)
         
         # cast kernel_size and stride into tuple
         if isinstance(kernel_size, int):
@@ -34,8 +34,8 @@ class MaxPool2d(Module):
         for i_stride in range(len(stride)):
             expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
         
-        self.kernel_size: int | tuple[int, int] = kernel_size
-        self.stride: int | tuple[int, int] | None = stride
+        self.kernel_size: Union[int, Tuple[int, int]] = kernel_size
+        self.stride: Union[int, Tuple[int, int], None] = stride
     
     def forward(self, x: Tensor) -> Tensor:
         return maxpool3d(x, self.kernel_size, self.stride)

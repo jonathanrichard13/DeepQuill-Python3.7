@@ -1,3 +1,4 @@
+from typing import Union
 from cupy.random import rand
 
 from . import Module
@@ -25,7 +26,7 @@ class Linear(Module):
         self.output_size: int = output_size
 
         self.weight: Tensor = Tensor(rand(input_size, output_size))
-        self.bias: Tensor | None = None
+        self.bias: Union[Tensor, None] = None
         if bias:
             self.bias = Tensor(rand(output_size))
 

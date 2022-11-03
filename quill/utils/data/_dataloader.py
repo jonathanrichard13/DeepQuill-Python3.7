@@ -1,4 +1,4 @@
-from collections.abc import Generator
+from typing import Generator, List, Tuple
 from random import shuffle
 
 from . import Dataset
@@ -12,9 +12,9 @@ class DataLoader:
         self.batch_size: int = batch_size
         self.shuffle: bool = shuffle
 
-    def __iter__(self) -> Generator[tuple[Tensor, ...], None, None]:
+    def __iter__(self) -> Generator[Tuple[Tensor, ...], None, None]:
         dataset_size: int = len(self.dataset)
-        start_indices: list[int] = list(range(0, dataset_size, self.batch_size))
+        start_indices: List[int] = list(range(0, dataset_size, self.batch_size))
         if self.shuffle:
             shuffle(start_indices)
         yield from (tuple(stack(column) for column in zip(*(self.dataset[idx] for idx in range(start_idx, min(start_idx + self.batch_size, dataset_size))))) for start_idx in start_indices)

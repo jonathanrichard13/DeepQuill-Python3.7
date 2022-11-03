@@ -1,3 +1,4 @@
+from typing import List, Tuple, Union
 from cupy import zeros
 
 from . import Module, Linear
@@ -28,7 +29,7 @@ class _Cell(Module):
         self.U: Linear = Linear(input_size, hidden_size * 4, bias=bias)
         self.W: Linear = Linear(hidden_size, hidden_size * 4, bias=bias)
     
-    def forward(self, x: Tensor, hc: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
+    def forward(self, x: Tensor, hc: Tuple[Tensor, Tensor]) -> Tuple[Tensor, Tensor]:
         _h, _c = hc
         x_f, x_i, x_c, x_o = split(self.U(x), 4, axis=-1)
         h_f, h_i, h_c, h_o = split(self.W(_h), 4, axis=-1)
@@ -63,17 +64,17 @@ class LSTM(Module):
         self.num_layers: int = num_layers
         self.bias: bool = bias
 
-        self.cells: list[_Cell] = [_Cell(input_size, hidden_size, bias)]
+        self.cells: List[_Cell] = [_Cell(input_size, hidden_size, bias)]
         self.cells.extend([_Cell(hidden_size, hidden_size, bias) for _ in range(num_layers - 1)])
         for i_cell, cell in enumerate(self.cells):
             setattr(self, f"cell_{i_cell}", cell)
 
-    def forward(self, x: Tensor, hc: tuple[Tensor, Tensor] | None = None) -> tuple[Tensor, tuple[Tensor, Tensor]]:
+    def forward(self, x: Tensor, hc: Union[Tuple[Tensor, Tensor], None] = None) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
         
         if hc is None:
             hc = (Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))), Tensor(zeros((*x.nd.shape[:-2], self.hidden_size))))
         
-        _y: list[Tensor] = []
+        _y: List[Tensor] = []
         for x_t in [squeeze(tensor, -2) for tensor in split(x, x.nd.shape[-2], -2)]:
             for cell in self.cells:
                 hc = cell(x_t, hc)

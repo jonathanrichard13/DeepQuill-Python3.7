@@ -1,4 +1,4 @@
-from collections.abc import Collection
+from typing import Collection, List
 from cupy import concatenate as _concatenate, split
 from numpy import ndarray
 
@@ -14,7 +14,7 @@ def concatenate(tensors: Collection[Tensor], axis: int = 0) -> Tensor:
     type_check(axis, "axis", int)
 
     def grad_fn(child: Tensor) -> None:
-        _child_grad: list[ndarray] = [_grad for _grad in split(child.grad, len(tensors), axis)]
+        _child_grad: List[ndarray] = [_grad for _grad in split(child.grad, len(tensors), axis)]
         for i_tensor in range(len(tensors)):
             tensors[i_tensor].grad += _child_grad[i_tensor]
 

@@ -1,11 +1,13 @@
+from typing import Dict, Union
+
 from . import Optimizer
 from ..classes import Tensor
 
-_State = Tensor | dict[str, "_State"]
+_State = Union[Tensor, Dict[str, "_State"]]
 
 class SGD(Optimizer):
 
-    def __init__(self, params: dict[str, _State], lr: float = 0.001, momentum: float = 0.):
+    def __init__(self, params: Dict[str, _State], lr: float = 0.001, momentum: float = 0.):
         super().__init__(params)
         self.lr: float = lr
         self.momentum: float = momentum

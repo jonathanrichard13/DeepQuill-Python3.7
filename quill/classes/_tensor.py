@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from typing import Callable, List, Union
 from typing_extensions import Self
 from cupy import ndarray as cdarray, zeros
 from numpy import ndarray
@@ -7,7 +7,7 @@ from ..functions import type_check
 
 class Tensor:
 
-    def __init__(self, nd: ndarray, parents: list[Self] = [], grad_fn: Callable[[Self], None] = None, split_idx: int = -1) -> None:
+    def __init__(self, nd: ndarray, parents: List[Self] = [], grad_fn: Callable[[Self], None] = None, split_idx: int = -1) -> None:
 
         # TYPE CHECKS
         type_check(nd, "nd", cdarray)
@@ -15,7 +15,7 @@ class Tensor:
         type_check(split_idx, "split_idx", int)
         
         self.nd: ndarray = nd
-        self.parents: list[Tensor] = parents
+        self.parents: List[Tensor] = parents
         self.grad_fn: Callable = grad_fn
         self.grad: ndarray = zeros(nd.shape)
         self.split_idx: int = split_idx
@@ -23,7 +23,7 @@ class Tensor:
         self.n_backward: int = 0
         for parent in parents:
             parent.n_backward += 1
-        self.velocity: ndarray | None = None
+        self.velocity: Union[ndarray, None] = None
     
     def _zero_i_backward(self) -> None:
         if self.i_backward != 0:
