@@ -3,7 +3,7 @@ from typing_extensions import Self
 from cupy import ndarray as cdarray, zeros
 from numpy import ndarray
 
-from ..functions import type_check
+from ..internals import type_check
 
 class Tensor:
 

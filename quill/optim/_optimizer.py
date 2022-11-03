@@ -1,7 +1,7 @@
 from typing import Callable, Dict, List, Union
 from cupy import zeros
 
-from ..classes import Tensor
+from ..core import Tensor
 
 _State = Union[Tensor, Dict[str, "_State"]]
 

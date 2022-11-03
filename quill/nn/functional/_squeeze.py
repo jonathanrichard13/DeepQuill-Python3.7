@@ -1,7 +1,7 @@
 from cupy import expand_dims, squeeze as _squeeze
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def squeeze(x: Tensor, axis: int) -> Tensor:
 

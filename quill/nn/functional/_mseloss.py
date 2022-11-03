@@ -1,4 +1,4 @@
-from ...classes import Tensor
+from ...core import Tensor
 
 def mseloss(y_tilde: Tensor, y: Tensor):
 

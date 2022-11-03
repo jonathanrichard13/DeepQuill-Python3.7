@@ -2,8 +2,8 @@ from typing import List, Sequence
 from cupy import concatenate as _concatenate, split
 from numpy import ndarray
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def concatenate(tensors: Sequence[Tensor], axis: int = 0) -> Tensor:
 

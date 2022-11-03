@@ -1,6 +1,6 @@
 from typing import Any, Dict, Union
 
-from ..classes import Tensor
+from ..core import Tensor
 
 _State = Union[Tensor, Dict[str, "_State"]]
 
