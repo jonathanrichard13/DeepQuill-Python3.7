@@ -1,17 +1,17 @@
-from collections.abc import Collection
+from collections.abc import Sequence
 from cupy import flip, pad, sum, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import expr_check, len_check, type_check
 
-def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] = 1, padding: int | Collection[int] = 0) -> Tensor:
+def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Sequence[int] = 1, padding: int | Sequence[int] = 0) -> Tensor:
     
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
     type_check(kernel, "kernel", Tensor)
-    type_check(stride, "stride", (int | Collection), int)
-    type_check(padding, "padding", (int | Collection), int)
+    type_check(stride, "stride", (int | Sequence), int)
+    type_check(padding, "padding", (int | Sequence), int)
 
     # cast stride, padding, and dilation into tuple
     if isinstance(stride, int):
@@ -40,7 +40,7 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Collection[int] =
         expr_check(padding[i_padding], f"padding[{i_padding}]", lambda x: x >= 0)
 
     # conv3d function that returns an ndarray instead of Tensor (if numpy has a 3D convolution function, we would've borrowed it instead)
-    def _conv3d(x1: ndarray, x2: ndarray, stride: Collection[int], padding: Collection[int]) -> ndarray:
+    def _conv3d(x1: ndarray, x2: ndarray, stride: Sequence[int], padding: Sequence[int]) -> ndarray:
 
         # pad input image
         for p in padding:

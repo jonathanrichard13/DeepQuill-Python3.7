@@ -1,4 +1,4 @@
-from collections.abc import Collection
+from collections.abc import Sequence
 
 from . import Module
 from .functional import maxpool3d
@@ -7,14 +7,14 @@ from ..functions import expr_check, len_check, type_check
 
 class MaxPool2d(Module):
 
-    def __init__(self, kernel_size: int | tuple[int, int], stride: int | tuple[int, int] | None = None) -> None:
+    def __init__(self, kernel_size: int | Sequence[int], stride: int | Sequence[int] | None = None) -> None:
 
         # Initialize parent class
         super().__init__()
 
         # TYPE CHECKS
-        type_check(kernel_size, "kernel_size", (int | Collection), int)
-        type_check(stride, "stride", (int | Collection | None), int)
+        type_check(kernel_size, "kernel_size", (int | Sequence), int)
+        type_check(stride, "stride", (int | Sequence | None), int)
         
         # cast kernel_size and stride into tuple
         if isinstance(kernel_size, int):

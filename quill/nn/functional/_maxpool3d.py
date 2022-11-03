@@ -1,16 +1,16 @@
-from collections.abc import Collection
+from collections.abc import Sequence
 from cupy import amax, argmax, unravel_index, zeros
 from numpy import ndarray
 
 from ...classes import Tensor
 from ...functions import expr_check, len_check, type_check
 
-def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: int | Collection[int] | None = None) -> Tensor:
+def maxpool3d(input_tensor: Tensor, kernel_size: int | Sequence[int], stride: int | Sequence[int] | None = None) -> Tensor:
 
     # TYPE CHECKS
     type_check(input_tensor, "input_tensor", Tensor)
-    type_check(kernel_size, "kernel_size", (int | Collection), int)
-    type_check(stride, "stride", (int | Collection | None), int)
+    type_check(kernel_size, "kernel_size", (int | Sequence), int)
+    type_check(stride, "stride", (int | Sequence | None), int)
     
     # cast kernel_size and stride into tuple
     if isinstance(kernel_size, int):
@@ -32,7 +32,7 @@ def maxpool3d(input_tensor: Tensor, kernel_size: int | Collection[int], stride: 
     for i_stride in range(len(stride)):
         expr_check(stride[i_stride], f"stride[{i_stride}]", lambda x: x > 0)
     
-    def _maxpool3d(input_nd: ndarray, kernel_size: Collection[int], stride: Collection[int]) -> ndarray:
+    def _maxpool3d(input_nd: ndarray, kernel_size: Sequence[int], stride: Sequence[int]) -> ndarray:
 
         # get input dimensions
         d_input_nd: tuple[int, int, int] | tuple[int, int, int, int] = input_nd.shape
