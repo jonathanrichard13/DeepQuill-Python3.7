@@ -56,8 +56,8 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Sequence[int] = 1
         d_x2: tuple[int, int, int] = x2.shape
         
         # create output image
-        y_height: int = ((d_x1[-2] + 2 * padding[-2] - d_x2[-2]) // stride[-2]) + 1
-        y_width: int = ((d_x1[-1] + 2 * padding[-1] - d_x2[-1]) // stride[-1]) + 1
+        y_height: int = ((d_x1[-2] - d_x2[-2]) // stride[-2]) + 1
+        y_width: int = ((d_x1[-1] - d_x2[-1]) // stride[-1]) + 1
         y: ndarray = zeros((*d_x1[:-2], y_height, y_width))
 
         # 3D cross-correlation loop
