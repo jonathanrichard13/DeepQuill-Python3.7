@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def reshape(x: Tensor, newshape: Sequence[int]) -> Tensor:
 

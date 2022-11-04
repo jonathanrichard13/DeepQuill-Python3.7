@@ -2,8 +2,8 @@ from typing import Sequence, Tuple, Union
 from cupy import flip, pad, sum, zeros
 from numpy import ndarray
 
-from ...classes import Tensor
-from ...functions import expr_check, len_check, type_check
+from ...core import Tensor
+from ...internals import expr_check, len_check, type_check
 
 def conv3d(input_tensor: Tensor, kernel: Tensor, stride: Union[int, Sequence[int]] = 1, padding: Union[int, Sequence[int]] = 0) -> Tensor:
     

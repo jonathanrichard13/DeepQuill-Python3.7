@@ -2,8 +2,8 @@ from typing import List, Sequence
 from cupy import split, squeeze, stack as _stack
 from numpy import ndarray
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def stack(tensors: Sequence[Tensor], axis: int = 0) -> Tensor:
 

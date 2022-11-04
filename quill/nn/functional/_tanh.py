@@ -1,8 +1,8 @@
 from cupy import exp
 from numpy import ndarray
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def tanh(x: Tensor) -> Tensor:
 

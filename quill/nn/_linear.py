@@ -3,8 +3,8 @@ from cupy.random import rand
 
 from . import Module
 from .functional import addbias, expand_dims, matmul, squeeze
-from ..classes import Tensor
-from ..functions import expr_check, type_check
+from ..core import Tensor
+from ..internals import expr_check, type_check
 
 class Linear(Module):
 

@@ -2,8 +2,8 @@ from typing import Sequence, Tuple, Union
 
 from . import Module
 from .functional import avgpool3d
-from ..classes import Tensor
-from ..functions import type_check, len_check, expr_check
+from ..core import Tensor
+from ..internals import type_check, len_check, expr_check
 
 class AvgPool2d(Module):
 

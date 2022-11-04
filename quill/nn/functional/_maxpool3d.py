@@ -2,8 +2,8 @@ from typing import Sequence, Tuple, Union
 from cupy import amax, argmax, unravel_index, zeros
 from numpy import ndarray
 
-from ...classes import Tensor
-from ...functions import expr_check, len_check, type_check
+from ...core import Tensor
+from ...internals import expr_check, len_check, type_check
 
 def maxpool3d(input_tensor: Tensor, kernel_size: Union[int, Sequence[int]], stride: Union[int, Sequence[int], None] = None) -> Tensor:
 

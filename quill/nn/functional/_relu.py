@@ -1,7 +1,7 @@
 from cupy import maximum
 
-from ...classes import Tensor
-from ...functions import type_check
+from ...core import Tensor
+from ...internals import type_check
 
 def relu(x: Tensor) -> Tensor:
 

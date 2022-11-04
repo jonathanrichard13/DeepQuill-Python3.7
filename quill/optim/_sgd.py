@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
 from . import Optimizer
-from ..classes import Tensor
+from ..core import Tensor
 
 _State = Union[Tensor, Dict[str, "_State"]]
 
@@ -12,13 +12,12 @@ class SGD(Optimizer):
         self.lr: float = lr
         self.momentum: float = momentum
     
-    def step(self) -> None:
-        def _sgd_step(x: Tensor) -> None:
-            if self.momentum != 0:
-                if x.velocity is None:
-                    x.velocity = self.lr * x.grad
-                else:
-                    x.velocity = (self.momentum * x.velocity) + (self.lr * x.grad)
-                x.grad = x.velocity
-            x.nd -= x.grad
-        self._modify_params(_sgd_step)
+    def step_fn(self, x: Tensor) -> None:
+        if self.momentum != 0:
+            if self not in x.velocities:
+                x.velocities[self] = self.lr * x.grad
+            else:
+                x.velocities[self] = (self.momentum * x.velocities[self]) + (self.lr * x.grad)
+            x.nd -= x.velocities[self]
+        else:
+            x.nd -= self.lr * x.grad
