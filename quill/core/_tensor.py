@@ -23,14 +23,8 @@ class Tensor:
         self.n_backward: int = 0
         for parent in parents:
             parent.n_backward += 1
-        self.velocity: ndarray | None = None
-    
-    def _zero_i_backward(self) -> None:
-        if self.i_backward != 0:
-            self.i_backward = 0
-            if self.grad_fn is not None:
-                for parent in self.parents:
-                    parent._zero_i_backward()
+        from ..optim import Optimizer
+        self.velocities: dict[Optimizer, ndarray] = {}
 
     def _backward(self) -> None:
         self.i_backward += 1
@@ -42,7 +36,6 @@ class Tensor:
                 parent._backward()
 
     def backward(self) -> None:
-        self._zero_i_backward()
         _n_backward: int = self.n_backward
         self.n_backward = 1
         self.grad += 1

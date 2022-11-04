@@ -22,11 +22,28 @@ class Optimizer:
                     expr(v)
                 visited.append(v)
     
+    def reset_velocity(self) -> None:
+        def _reset_velocity(x: Tensor) -> None:
+            if self in x.velocities:
+                del x.velocities[self]
+        self._modify_params(_reset_velocity)
+    
+    def clear_velocities(self) -> None:
+        def _clear_velocities(x: Tensor) -> None:
+            x.velocities.clear()
+        self._modify_params(_clear_velocities)
+    
     def zero_grad(self) -> None:
-        def _zero_grad_and_reset_velocity(x: Tensor) -> None:
+        def _zero_grad(x: Tensor) -> None:
+            x.i_backward = 0
             x.grad = zeros(x.grad.shape)
-            x.velocity = None
-        self._modify_params(_zero_grad_and_reset_velocity)
+        self._modify_params(_zero_grad)
+    
+    def step_fn(self, x: Tensor) -> None:
+        raise NotImplementedError(f"Step function for {type(self).__name__} optimizer has not been implemented yet.")
     
     def step(self) -> None:
-        raise NotImplementedError(f"Step function for {type(self).__name__} optimizer has not been implemented yet.")
+        def _step(x: Tensor) -> None:
+            x.n_backward = 0
+            self.step_fn(x)
+        self._modify_params(_step)
