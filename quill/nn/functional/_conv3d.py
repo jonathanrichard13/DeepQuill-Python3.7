@@ -68,7 +68,7 @@ def conv3d(input_tensor: Tensor, kernel: Tensor, stride: int | Sequence[int] = 1
         return y
 
     # dilation function, only used by grad_fn
-    def _dilate(x: ndarray, dilation: tuple[int, int]) -> ndarray:
+    def _dilate(x: ndarray, dilation: Sequence[int]) -> ndarray:
         d_x: tuple[int, int, int] | tuple[int, int, int, int] = x.shape
         y_height: int = d_x[-2] + ((d_x[-2] - 1) * (dilation[-2] - 1))
         y_width: int = d_x[-1] + ((d_x[-1] - 1) * (dilation[-1] - 1))
